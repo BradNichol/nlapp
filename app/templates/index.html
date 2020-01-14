@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+
+  <div class="card-deck mt-5">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Customers</h5>
+          <p class="card-text display-1">{{ result1 }}</p>
+          <a href="/customer" class="btn btn-primary">More Customers</a>
+        </div>
+      </div>
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Orders</h5>
+          <p class="card-text display-1">{{ result2 }}</p>
+          <a href="/orders" class="btn btn-primary">See Orders</a>
+        </div>
+      </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Recipes</h5>
+            <p class="card-text display-1">{{ result3 }}</p>
+            <a href="/recipes/view" class="btn btn-primary">See Recipes</a>
+          </div>
+    </div>
+  </div>
+    
+  <div class="card mt-4">
+    <div class="card-body">
+        <h4 class="card-title">Weekly Units Produced (Demo)</h4>
+        <hr/>
+        <canvas id="pOverview" width="350" height="150"></canvas>
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+    let pData = {
+        label: 'Units',
+        data: ['16000' , '14500', '18000', '20000', '13000', ''],
+        backgroundColor: '#d5d9f0'
+    };
+
+    let ctx = document.getElementById('pOverview').getContext('2d');
+    let pChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            datasets: [pData]
+        }
+    });
+</script>
+{% endblock %}

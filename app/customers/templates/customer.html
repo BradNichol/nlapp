@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Customer 
+{% endblock %}
+
+{% block main %}
+
+<div class="card shadow mt-5">
+    <h3 class="card-header text-center">Customers</h3>
+    <div class="card-body">
+            <div class="row text-center">
+                <div class="col">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomer">Add Customer</button>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive mt-5">
+                <table id="customer_table" class="display table table-striped table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                        <th>Company Name</th>
+                        <th>Primary Contact</th>
+                        <th>Telephone Number</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in customers %}
+                        <tr class="edit_customer" id="{{ row.id }}">
+                            <td>{{row.cname}}</td>
+                            <td>{{row.fname}} {{row.sname}}</td>
+                            <td>{{row.cnumber}}</td>
+                            <td>{{row.email}}</td>
+                    </tr>
+                    {% endfor %}                  
+                </tbody>    
+            </table>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+    <!-- Add Customer Modal -->
+    <div class="modal fade" id="addCustomer" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/customer" method="POST">
+                        <h5>Company Info</h5>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="cname">Company Name</label>
+                            <input type="text" class="form-control" id="cname" name="cname" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="cnumber">Telephone Number</label>
+                            <input type="number" class="form-control" id="cnumber" name="cnumber" autocomplete="off">
+                        </div>
+                        <h5>Primary Contact</h5>
+                        <hr/>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="fname">First Name</label>
+                                <input type="text" class="form-control" id="fname" name="fname" placeholder="First name" autocomplete="off">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="sname">Surname</label>
+                                <input type="text" class="form-control" id="sname" name="sname" placeholder="Surname" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="email" autocomplete="off" required>
+                        </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit customer Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/customer/edit" method="POST">
+                        <h5>Company Info</h5>
+                        <hr/>
+                        <div class="form-group">
+                            <input type="hidden" id="cid" name="cid">
+                            <label for="editCname">Company Name</label>
+                            <input type="text" class="form-control" id="editCname" name="cname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editNumber">Telephone Number</label>
+                            <input type="number" class="form-control" id="editNumber" name="cnumber">
+                        </div>
+                        <h5>Primary Contact</h5>
+                        <hr/>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="editFname">First Name</label>
+                                <input type="text" class="form-control" id="editFname" name="fname" placeholder="First name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="editSname">Surname</label>
+                                <input type="text" class="form-control" id="editSname" name="sname" placeholder="Surname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email" placeholder="email" required>
+                        </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+</div>
+
+
+    <script>
+        $(document).ready(function() {
+    
+    
+            $(document).ready(function() {
+                $('#customer_table').DataTable();
+            });
+
+            $(document).on('click', '.edit_customer', function(){
+            let customer_id = $(this).attr("id");
+            $.ajax({
+            url:"/customer/edit",
+            method:"GET",
+            data:{customer_id},
+            dataType:"json",
+            success:function(data){
+                $('#cid').val(data[0].id);
+                $('#editCname').val(data[0].cname);
+                $('#editNumber').val(data[0].cnumber);
+                $('#editFname').val(data[0].fname);
+                $('#editSname').val(data[0].sname);
+                $('#editEmail').val(data[0].email);
+                $('#editModal').modal('show'); 
+            }
+        });
+    });
+        });
+    </script>
+    
+        
+  
+
+{% endblock %}

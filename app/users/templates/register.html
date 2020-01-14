@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+        
+        <div class="justify-content-center row mt-5 mb-5">
+            <div class="col-lg-5">
+                <div class="card shadow-lg">
+                    <div class="card-header text-center">
+                        <h4>Register</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h5>Create Your Account</h5>
+                            <p>It only takes a few minutes to register</p>
+                        </div>
+                        <form action="/register" method="post">
+                            <div class="form-group">
+                              <label for="fname">First name</label>
+                              <input type="text" name="firstname" id="firstname" class="form-control" placeholder="" aria-describedby="helpId" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="lname">Surname</label>
+                              <input type="text" name="surname" id="surname" class="form-control" placeholder="" aria-describedby="helpId" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="email">Email</label>
+                              <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="password">Password</label>
+                              <input type="password" class="form-control" name="password" id="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+
+{% endblock %}

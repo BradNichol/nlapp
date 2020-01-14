@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    {% endwith %}
+{% endblock %}
+
+{% block main %}
+
+{% endblock %}

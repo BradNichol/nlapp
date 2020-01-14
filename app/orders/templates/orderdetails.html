@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Order Overview
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="card-deck mt-5">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title">Order Number: NL/{{  order_info[0]["order_id"] }} <span class="badge badge-info">{{  order_info[0]["status"] }}</span></h5>
+                <span class="badge badge-pill badge-primary">{{  order_info[0]["cname"] }}</span>
+                <span class="badge badge-pill badge-primary">{{  order_info[0]["rname"] }} - V{{  order_info[0]["recipe_version_number"] }}</span>
+                <span class="badge badge-pill badge-success">{{  recipe[0]["flavour"] }}</span>
+            </div>
+            <div class="card-body">                
+                <div class="row">        
+                    <div class="col">
+                        <p class="card-text"><strong>Bars: </strong>{{  order_info[0]["units"] }}</p>
+                        <hr/>
+                    </div>
+                    <div class="col">
+                        <p class="card-text"><strong>Cases: </strong>{{  (order_info[0]["units"] / 12)|round(2) }}</p>
+                        <hr/>
+                    </div>  
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="card-text"><strong>Batch Size: </strong>{{ '{0:,}'.format(order_info[0]["batch_size"])  }} </p>
+                    </div>
+                </div>
+                <h6>Ingredient Details</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Raw Materials</th>
+                                    <th>Mix Qty</th>
+                                    <th>Batch Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% for row in recipe %}
+                                <tr>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.ingredient_amount * mix_size }}</td>
+                                    <td>{{ (row.ingredient_amount * order_info[0]["batch_size"])|round(2) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn" id="edit_order">Edit</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Insights</h4>
+                <hr/>
+                <canvas id="unitsChart" width="400" height="300"></canvas>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Edit Order Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Order</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action ="/orders/edit" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                        <input type="hidden" id ="editId" name="order_id"/>
+                                        
+                                        <label for="recipe">Recipe</label>
+                                            <input type="text" list="recipe_list" class="form-control" id="editRecipe" name="recipe" autocomplete="off" required>
+                                                <datalist id="recipe_list">
+                                                    {% for row in all_recipe %}
+                                                    <option value="{{row.rname}}">{{ row.rname }}</option>
+                                                    {% endfor %}
+                                                </datalist>
+                                    </div>
+                                <div class="form-group col-md-6">
+                                    <label for="units">Units</label>
+                                    <input type="number" id="editUnits" name="units" class="form-control" min="1" validate/>
+                                </div>
+                            </div>
+                            
+                                <div class="form-group">
+                                    <label for="editStatus">Status</label>
+                                    <select class="form-control" id="editStatus" name="status">
+                                        <option>New</option>
+                                        <option>In Progress</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+
+        $(document).on('click', '#edit_order', function(){
+            let order_id = '{{  order_info[0]["order_id"] }}'
+            $.ajax({
+                url:"/orders/edit",
+                method:"GET",
+                data:{order_id},
+                dataType:"json",
+                success:function(data){
+                    $('#editId').val(data[0].order_id);
+                    $('#editRecipe').val(data[0].rname);
+                    $('#editUnits').val(data[0].units);
+                    $('#editStatus').val(data[0].status);
+                    $('#editModal').modal('show'); 
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#orders_table').DataTable();
+        });
+    
+        // Unit Chart 
+        let unitData = {
+            label: 'Units Produced',
+            data: ['{{  order_info[0]["units"] }}', '{{ units_produced[0]["sum"]}}']
+        };
+
+        let ctx = document.getElementById('unitsChart').getContext('2d');
+        let unitsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Units Ordered', 'Units Produced'],
+                datasets: [unitData]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                            }
+                        }]
+                     }
+                }
+        });
+    });
+</script>
+
+
+    
+{% endblock %}

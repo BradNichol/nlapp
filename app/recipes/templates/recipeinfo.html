@@ -1,0 +1,281 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Recipe Overview
+{% endblock %}
+
+{% block main %}
+
+{# Set variables and sum all nutrient values - to be used throughout template instead of duplication #}
+
+
+{% set totalProtein = recipe | sum(attribute='SubTotalProtein')|round(2) %}
+{% set totalCarbs = recipe | sum(attribute='SubTotalCarbohydrates')|round(2) %}
+{% set totalSugars = recipe | sum(attribute='SubTotalSugars')|round(2) %}
+{% set totalFats = recipe | sum(attribute='SubTotalFats')|round(2) %}
+{% set totalSaturates = recipe | sum(attribute='SubTotalSaturates')|round(2) %}
+{% set totalFibre = recipe | sum(attribute='SubTotalFibre')|round(2) %}
+{% set totalSalt = recipe | sum(attribute='SubTotalSalt')|round(2) %}
+{% set totalSodium = recipe | sum(attribute='SubTotalSodium')|round(2) %}
+
+{% set totalingredientAmount = recipe | sum(attribute='SubTotalIngredient_amount') %}
+
+{% set barWeight = (recipe[0]["bar_weight"])|round(2) %}
+
+
+    <div class="row mt-5">
+        
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title" id="rnameTitle">{{ recipe[0]["rname"] }}</h4>
+                    {% if totalSugars < 5 %}
+                    <span class="badge badge-pill badge-primary">Low Sugar</span>
+                    {% endif %}
+                    {% if totalProtein > 15 %}
+                    <span class="badge badge-pill badge-primary">High Protein</span>
+                    {% endif %}
+                    <hr/>
+                    <p class="card-text"><strong>Customer:</strong> {{ customer[0]["cname"]}} </p>
+                    <p class="card-text"><strong>Flavour:</strong> {{ recipe[0]["flavour"]}} </p>
+                    <p class="card-text"><strong>Version:</strong> {{ recipe[0]["version_number"] }} </p>
+                    
+                    <p class="card-text" value="1"><strong>Approved:</strong></p>
+                    {% if recipe[0]["approved"] == 1  %}
+                    <div class="btn-group btn-group-toggle" id="approved" data-toggle="buttons">
+                        <label class="btn btn-secondary active">
+                          <input type="radio" autocomplete="off" checked> Yes
+                        </label>
+                        <label class="btn btn-outline-secondary">
+                          <input type="radio" autocomplete="off"> No
+                        </label>
+                    </div>
+                    {% else %}
+                    <div class="btn-group btn-group-toggle" id="approved" data-toggle="buttons">
+                        <label class="btn btn-outline-secondary">
+                          <input type="radio" autocomplete="off"> Yes
+                        </label>
+                        <label class="btn btn-secondary active">
+                          <input type="radio" autocomplete="off" checked> No
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Nutritional Info</h4>
+                    <hr/>
+                    {% if totalingredientAmount < 100 %}
+                    <span class="badge badge badge-warning">Total % below 100</span>
+                    {% elif totalingredientAmount > 100 %}
+                    <span class="badge badge badge-danger">Total % above 100</span>
+                    {% endif %}
+                    <div class="table-responsive mt-5">
+                        <table id="recipe_table" class="display table table-bordered table-hover table-sm nt" style="width:100%">
+                            <thead style="font-size:9px;">
+                                <tr>
+                                    <th>Product Code</th>
+                                    <th>Name</th>
+                                    <th>%</th>
+                                    <th>Protein (g)</th>
+                                    <th>Carbohydrates (g)</th>
+                                    <th>Sugars (g)</th>
+                                    <th>Fats (g)</th>
+                                    <th>Saturates (g)</th>
+                                    <th>Fibre (g)</th>
+                                    <th>Salt (g)</th>
+                                    <th>Sodium (g)</th>
+                                    <th>kJ</th>
+                                    <th>Kcal</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in recipe %}
+                                <tr class="edit_ingredient" id="{{ row.product_code }}"">
+                                    <td>{{ row.product_code }}</td>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.SubTotalIngredient_amount }}</td>
+                                    <td>{{ row.SubTotalProtein }}</td>
+                                    <td>{{ row.SubTotalCarbohydrates }}</td>
+                                    <td>{{ row.SubTotalSugars }}</td>
+                                    <td>{{ row.SubTotalFats }}</td>
+                                    <td>{{ row.SubTotalSaturates }}</td>
+                                    <td>{{ row.SubTotalFibre }}</td>
+                                    <td>{{ row.SubTotalSalt }}</td>
+                                    <td>{{ row.SubTotalSodium|round(2) }}</td>
+                                    <td id="kJ">{{ (((row.SubTotalProtein * 4) + (row.SubTotalCarbohydrates * 4) + (row.SubTotalFats * 9) + (row.SubTotalFibre * 1.6)) * 4.128)|round(2)  }}</td>
+                                    <td id="kcal">{{ ((row.SubTotalProtein * 4) + (row.SubTotalCarbohydrates * 4) + (row.SubTotalFats * 9) + (row.SubTotalFibre * 1.6))|round(2)  }}</td>
+            
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot style="background-color:#3fa1a6; color:white;">
+                                <tr>
+                                    <td colspan="2">Per 100g</td>
+                                    <td>{{ recipe | sum(attribute='SubTotalIngredient_amount')|round(2) }}</td>
+                                    <td>{{ totalProtein }}</td>
+                                    <td>{{ totalCarbs  }}</td>
+                                    <td>{{ totalSugars }}</td>
+                                    <td>{{ totalFats }}</td>
+                                    <td>{{ totalSaturates }}</td>
+                                    <td>{{ totalFibre }}</td>
+                                    <td>{{ totalSalt }}</td>
+                                    <td>{{ totalSodium }}</td>
+                                    <td id="kJ">{{ (((totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9) + (totalFibre * 1.6)) * 4.128)|round(2)}}</td>
+                                    <td id="kcal">{{ ((totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9) + (totalFibre * 1.6))|round(2)  }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Per {{ recipe[0]["bar_weight"] }}g </td>
+                                    <td>{{ recipe | sum(attribute='SubTotalIngredient_amount') }}</td>
+                                    <td>{{ ((totalProtein / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalCarbs / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalSugars / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalFats / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalSaturates / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalFibre / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalSalt / 100) * barWeight)|round(2) }}</td>
+                                    <td>{{ ((totalSodium / 100) * barWeight)|round(3) }}</td>
+                                    <td id="kJ">{{ ((((totalProtein / 100 * barWeight) * 4) + ((totalCarbs / 100 * barWeight) * 4) + ((totalFats / 100 * barWeight) * 9) + ((totalFibre / 100 * barWeight) * 1.6)) * 4.128)|round(2)  }}</td>
+                                    <td id="kcal">{{ (((totalProtein / 100 * barWeight) * 4) + ((totalCarbs / 100 * barWeight) * 4) + ((totalFats / 100 * barWeight) * 9) + ((totalFibre / 100 * barWeight) * 1.6))|round(2)  }}</td>
+                                </tr>
+                            </tfoot>
+                            
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <!-- For recipe duplication-->
+                    <form action="/recipes/add" method="POST">
+                    {% for row in recipe %}    
+                        <input type="hidden" name="product_code" value="{{ row.ingredient_id }}">
+                        <input type="hidden" name="ingredient_amount" value="{{ row.ingredient_amount }}">
+                    {% endfor %}
+                        <input type="hidden" name="customer_id" value="{{ recipe[0]['customer_id'] }}">
+                        <input type="hidden" name="rname" value="{{ recipe[0]['rname'] }}">
+                        <input type="hidden" name="flavour" value="{{ recipe[0]['flavour'] }}">
+                        <input type="hidden" name="version_number" value="{{ recipe[0]['version_number'] }}">
+                        <input type="hidden" name="bar_weight" value="{{ recipe[0]['bar_weight'] }}">
+                        <button type="submit" class="btn btn-secondary">New Version</button>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Ingredient % Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <form action ="/recipes/edit" method="POST">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <input type="hidden" id="rname" name="rname"/>
+                                        <input type="hidden" id="ingredient_id" name="ingredient_id"/>
+                                        <input type="hidden" id="version_number" name="version_number" value="{{ recipe[0]['version_number'] }}"/>
+                                        <label for="ingredient">Ingredient Description</label>
+                                        <input type="text" id="ingredient" name="ingredient" class="form-control" readonly />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="ingredient_amount">Ingredient %</label>
+                                        <input type="text" class="form-control" id="editAmount" name="editAmount">
+                                    </div>
+                                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form> 
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- Approved modal -->
+    <div class="modal fade" id="approvedModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                    <div class="modal-body">
+                        <form action ="/recipes/edit" method="POST">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="hidden" id="rname2" name="rname2"/>
+                                    <input type="hidden" id="version_number" name="version_number"/>
+                                    <label for="ingredient">Approved</label>
+                                    <select id="approval" name="approval" class="form-control">
+                                        <option value="1">YES</option>
+                                        <option value="0">NO</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    
+
+<script>
+    $(document).ready(function(){
+        
+
+        // edit ingredient within a recipe
+        $(document).on('click', '.edit_ingredient', function(){
+                let product_code = $(this).attr("id");
+                let rname = $('#rnameTitle').text();
+                let version_number = "{{ recipe[0]['version_number'] }}"
+                $.ajax({
+                    url:"/recipes/edit",
+                    method:"GET",
+                    data:{product_code, rname, version_number},
+                    dataType:"json",
+                    success:function(data){
+                        $('#rname').val(data[0].rname);
+                        $('#ingredient_id').val(data[0].ingredient_id);
+                        $('#ingredient').val(data[0].name);
+                        $('#editAmount').val(data[0].ingredient_amount);
+                        $('#editModal').modal('show'); 
+                    }
+                });
+            });
+
+        
+        // recipe approval
+        $(document).on('click', '#approved', function(){
+            let rname = "{{ recipe[0]['rname'] }}"
+            let version_number = "{{ recipe[0]['version_number'] }}"
+            let is_approved = "{{ recipe[0]['approved'] }}"
+            $.ajax({
+                url:"/recipes/edit",
+                method:"GET",
+                data:{rname, version_number, is_approved},
+                success:function(data){
+                    window.location.href="/recipes/overview/" + rname + '/' + version_number;
+                }
+        
+                
+            });
+        });
+
+    });
+
+</script>
+
+    
+{% endblock %}

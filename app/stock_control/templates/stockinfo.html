@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Stock Overview
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container mt-5">
+    <div class="card-deck">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ stock[0]["ingredient_name"] }}</h4>
+                <hr/>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="totalStock"><strong>Total Stock:</strong></label>
+                        <input type="text" class="form-control" id="totalStock" value="{{ stock[0]['total_stock'] }} kg" disabled>
+                    </div>
+                    <div class="form-group col">                            
+                        <label for="site1Stock">Site 1 Stock:</label>
+                        <input type="text" class="form-control" id="site1Stock" value="{{ stock[0]['site_1'] }} kg" disabled>
+                    </div>
+                    <div class="form-group col">
+                        <label for="site2Stock">Site 2 Stock:</label>
+                        <input type="text" class="form-control" id="site2Stock" value="{{ stock[0]['site_2'] }} kg" disabled>
+                    </div>
+                </div>
+                <hr/>
+                <h6>Stock Details</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Supplier Name</th>
+                                    <th>Supplier Code</th>
+                                    <th>Batch Code</th>
+                                    <th>Best Before</th>
+                                    <th>Stock Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% for row in stock %}
+                                <tr>
+                                    <td>{{ row.supplier_name }}</td>
+                                    <td>{{ row.supplier_code }}</td>
+                                    <td>{{ row.batch_code }}</td>
+                                    <td>{{ row.best_before }}</td>
+                                    <td>{{ row.stock_level }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Insights</h4>
+                <hr/>
+                <canvas id="stockChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+</div>
+</div>
+      
+    
+</div>
+
+<script>
+    let stockData = {
+        label: 'Stock Levels Per Site',
+        data: ['{{ stock[0]["site_1"] }}', '{{ stock[0]["site_2"] }}']
+    };
+
+    let ctx = document.getElementById('stockChart').getContext('2d');
+    let stockChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Site 1', 'Site 2'],
+            datasets: [stockData]
+        }
+    });
+</script>
+
+    
+{% endblock %}

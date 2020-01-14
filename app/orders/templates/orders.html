@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Orders
+{% endblock %}
+
+
+{% block main %}
+
+
+    
+    <div class="card shadow mt-5">
+        <h3 class="card-header text-center">Orders</h3>
+        <div class="card-body">
+                <div class="row text-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addOrder">Add Order</button>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive mt-5">
+                    <table id="orders_table" class="display table table-striped table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Order No.</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Order Date</th>
+                                <th>Recipe</th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in orders %}
+                            <tr class="view_order" id="{{row.order_id}}">
+                                <td>NL/{{ row.order_id }}</td>
+                                <td>{{ row.customers.cname }}</td>
+                                {% if row.status == 'New' %}
+                                <td><span class="badge badge-primary">{{ row.status }}</span></td>
+                                {% elif row.status == 'In Progress' %}
+                                <td><span class="badge badge-warning">{{ row.status }}</span></td>
+                                {% elif row.status == 'Completed' %}
+                                <td><span class="badge badge-success">{{ row.status }}</span></td>
+                                {% elif row.status == 'Cancelled' %}
+                                <td><span class="badge badge-danger">{{ row.status }}</span></td>
+                                {% endif %}
+                                <td>{{ row.order_date.strftime("%d/%m/%Y") }}</td>
+                                <td>{{ row.rname }}</td>
+                                <td>{{ row.units }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>    
+                    </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Add Order Modal -->
+    <div class="modal fade" id="addOrder" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Order</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/orders/add" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="cname">Customer Name</label>
+                                <input type="text" list="customer" class="form-control" id="cname" name="customer_id" autocomplete="off" required>
+                                    <datalist id="customer">
+                                        {% for row in customers %}
+                                        <option value="{{row.id}}">{{ row.cname }}</option>
+                                        {% endfor %}
+                                    </datalist>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="order_date">Order Date</label>
+                                <input type="date" class="form-control" id="order_date" name="order_date">
+                            </div>
+                        </div>
+                        <h5>Order Details</h5>
+                        <hr/>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="recipe">Recipe</label>
+                                <input type="text" list="recipe_list" class="form-control" id="recipe" name="recipe" autocomplete="off">
+                                    <datalist id="recipe_list">
+                                        {% for row in recipes %}
+                                        <option value="{{row.rname}}" >{{ row.rname }}</option>
+                                        {% endfor %}
+                                    </datalist>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="units">Units</label>
+                                <input type="number" class="form-control" id="units" name="units" min="1" required>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Order</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+<script>
+    $(document).ready(function() {
+
+        $(document).on('click', '.view_order', function(){
+            let order_id = $(this).attr("id");
+            window.location.href="/orders/" + order_id
+        });
+
+
+        $(document).ready(function() {
+            $('#orders_table').DataTable();
+        });
+    });
+</script>
+
+
+{% endblock %}

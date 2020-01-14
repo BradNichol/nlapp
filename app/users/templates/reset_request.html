@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Reset Request
+{% endblock %}
+
+{% block main %}
+        
+        <div class="justify-content-center row mt-5">
+            <div class="col-lg-4">
+                <div class="card shadow-lg">
+                    <div class="card-header text-center">
+                        <h4>Enter Your Email</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/password/reset" method="post">
+                            <div class="form-group">
+                              <label for="email">Email</label>
+                              <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId" placeholder="Enter your email" required>
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-primary">Reset</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+
+{% endblock %}

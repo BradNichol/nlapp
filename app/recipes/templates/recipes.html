@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Recipes
+{% endblock %}
+
+{% block main %}
+    
+        <div class="mt-5"> 
+            <!-- Recent Recipes -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>All Recipes</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="recent_recipes" class="display compact table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Recipe Name</th>
+                                        <th>Customer</th>
+                                        <th>Flavour</th>
+                                        <th>Version</th>
+                                        <th>Approved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% for row in recipe %}
+                                        <tr class="view_recipe" id="{{ row.rname }}" version="{{ row.version_number }}">
+                                            <td>{{ row.rname }}</td>
+                                            <td>{{ row.customer.cname }}</td>
+                                            <td>{{ row.flavour }}</td>
+                                            <td>{{ row.version_number }}</td>
+                                            {% if row.approved == 1 %}
+                                            <td><span class="badge badge-success">Yes</span></td>
+                                            {% elif row.approved == 0 %}
+                                            <td><span class="badge badge-danger">No</span></td>
+                                            {% endif %}
+                                    </tr>
+                                    {% endfor %}                   
+                                </tbody>    
+                            </table>
+                        </div>
+                </div>
+            </div>
+            </div>
+
+           
+                
+        </div>
+
+
+    <script>
+        $(document).ready(function(){
+
+        
+            // data table
+            
+            $('#recent_recipes').DataTable({
+                "pageLength" : 6,
+                stateSave: true
+
+            });
+
+            $(document).on('click', '.view_recipe', function(){
+                    let rname = $(this).attr("id");
+                    let version = $(this).attr("version");
+                    window.location.href="/recipes/overview/" + rname + "/" + version
+                });
+
+
+            
+            
+        });
+            
+    </script>
+
+{% endblock %}

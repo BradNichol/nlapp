@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Recipe Test
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="card-title">Recipe Builder</h5>
+            </div>
+            <form action="/recipes/add" method="POST"> 
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h4>Details</h4>
+                            <div class="form-row">
+                                <div class="form-group col-lg-8">
+                                    <label for="rname">Recipe Name</label>
+                                    <input type="text" name="rname" id="rname" class="form-control" placeholder="PHD/001" required autocomplete="off">
+                                </div>
+                                <div class="form-group col-lg-8">
+                                    <label for="cname">Customer Name</label>
+                                    <input type="text" list="customer" class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                        <datalist id="customer">
+                                            {% for row in customers %}
+                                            <option value="{{row.id}}">{{ row.cname }}</option>
+                                            {% endfor %}
+                                        </datalist>
+                                </div>
+                                <div class="form-group col-lg-8">
+                                    <label for="flavour">Flavour Name</label>
+                                    <input type="text" name="flavour" id="flavour" class="form-control" placeholder="" required autocomplete="off">
+                                </div>
+                                <div class="form-group col-lg-8">
+                                    <label for="bar_weight">Bar Weight (g)</label>
+                                    <input type="number" min="1" max="100" name="bar_weight" id="bar_weight" class="form-control" placeholder="" required>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col">
+                        <h4>Specification</h4>
+                            <div class="table-responsive"> 
+                            <table class="rbTable mt-2" id="recipeTable">
+                                <thhead>
+                                    <tr>
+                                        <td>Ingredient</td>
+                                        <td>Inclusion %</td>
+                                        <td colspan="2">Edit</td>
+                                    </tr>
+                                </thhead>
+                                    <tr>
+                                        <td>
+                                            <input list ="ingredients" id="product_code" name="product_code" style="border:none; width:100%" required autocomplete="off">
+                                            <datalist id="ingredients">
+                                                    {% for row in ingredients %}
+                                                    <option value="{{ row.product_code }}">{{ row.name }}</option>
+                                                    {% endfor %}
+                                                </datalist>
+                                        </td>
+                                        <td><input type="number" step="0.01" min="0" max="100" id="ingredient_amount" name="ingredient_amount" style="border:none; width:100%"></td>    
+                                        <td><button type="button" class="btn btn-dark btn-sm" style="width:100%" onclick="addRow(this);">  +  </button></td>
+                                        <td><button type="button" class="btn btn-outline-dark btn-sm" style="width:100%" onclick="deleteRow(this);">  -  </button></td>            
+                                    </tr>
+                                </table>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-lg-4 mt-5">
+                        <button class="btn btn-block btn-primary" type="submit">Save</button>
+                    </div>
+                </div>
+                
+            </form>
+            </div>
+        </div>
+</div>
+
+</div>
+    
+</div>
+
+<script>
+function addRow(row)
+{
+    var tr = row.parentNode.parentNode.cloneNode(true);
+    document.getElementById('recipeTable').appendChild(tr);
+    
+}
+
+function deleteRow(row){
+      var d = row.parentNode.parentNode.rowIndex;
+      document.getElementById('recipeTable').deleteRow(d);
+   }
+
+</script>
+
+
+    
+{% endblock %}

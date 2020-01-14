@@ -1,0 +1,228 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Stock Control
+{% endblock %}
+
+
+{% block main %}
+
+
+    
+    <div class="card shadow mt-5">
+        <h3 class="card-header text-center">Stock Control</h3>
+        <div class="card-body">
+                <div class="row text-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStock">Add Stock</button>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive mt-5">
+                    <table id="stock_table" class="display table table-striped table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>Name</th>
+                                <th>Supplier</th>
+                                <th>Batch Code</th>
+                                <th>Best Before</th>
+                                <th>Stock</th>
+                                <th>Date Added</th>
+                                <th>Edit</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in stock_level %}
+                            <tr>
+                                    <td>{{ row.product_code }}</td>
+                                    <td>{{ row.ingredient_name }}</td>
+                                    <td>{{ row.supplier_name }}</td>
+                                    <td>{{ row.batch_code }}</td>
+                                    <td>{{ row.best_before }}</td>
+                                    <td>{{ row.totalStock }}</td>
+                                    <td>{{ row.date_added }}</td>
+                                    <td>
+                                        <button type="button" class="fas fa-edit edit_data" name="edit_data" id="{{ row.order_id }}"></button>
+                                    </td>
+                                    <td>
+                                        <form action="/stock/{{ row.product_code }}" method="POST"><button type="submit" class="far fa-eye" name="product_code" value="{{ row.product_code }}"></button></form>
+                                    </td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </tbody>    
+                    </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Add Stock Modal -->
+    <div class="modal fade" id="addStock" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Stock</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/stock" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="product_code">Product Code</label>
+                                <input type="text" list="pc" class="form-control" id="product_code" name="product_code" required autocomplete="off">
+                                    <datalist id="pc">
+                                        {% for row in ingredients %}
+                                        <option value="{{row.product_code}}">{{ row.name }}</option>
+                                        {% endfor %}
+                                    </datalist>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="order_date">Order Date</label>
+                                <input type="date" class="form-control" id="order_date" name="order_date">
+                            </div>
+                        </div>
+                        <h5>Stock Details</h5>
+                        <hr/>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="site1Stock">Site 1:</label>
+                                <input type="number" class="form-control" id="site1Stock" name="site1Stock" min="1" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="site2Stock">Site 2:</label>
+                                <input type="number" class="form-control" id="site2Stock" name="site2Stock" min="1" required>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Order</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Edit Order Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Order</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action ="/editOrders" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                    <input type="hidden" id ="editId" name="order_id"/>
+                                    
+                                    <label for="recipe">Recipe</label>
+                                        <input type="text" list="recipe_list" class="form-control" id="editRecipe" name="recipe">
+                                            <datalist id="recipe_list">
+                                                {% for row in recipe %}
+                                                <option value="{{row.rname}}">{{ row.rname }}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                </div>
+                            <div class="form-group col-md-6">
+                                <label for="units">Units</label>
+                                <input type="number" id="editUnits" name="units" class="form-control" min="1" validate/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="status">Status</label>
+                                    <select class="form-control" id="editStatus" name="status">
+                                        <option>New</option>
+                                        <option>In Progress</option>
+                                        <option>Completed</option>
+                                        <option>Cancelled</option>
+                                    </select>  
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="completed_date">Completed Date</label>
+                                <input type="date" class="form-control" id="completed_date" name="completed_date">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="total_time">Total Time</label>
+                                <input type="time" class="form-control" id="total_time" name="total_time">
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Recipe Details</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive mt-5">
+                            <table id="recipe_table" class="display table table-bordered table-hover table-sm" style="width:100%">
+                                <thead style="font-size:12px;">
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Name</th>
+                                        <th>Stock Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data_cells">
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+
+<script>
+    $(document).ready(function() {
+
+        $(document).on('click', '.edit_data', function(){
+            let order_id = $(this).attr("id");
+            $.ajax({
+                url:"/editOrders",
+                method:"GET",
+                data:{order_id},
+                dataType:"json",
+                success:function(data){
+                    $('#editId').val(data[0].order_id);
+                    $('#editRecipe').val(data[0].rname);
+                    $('#editUnits').val(data[0].units);
+                    $('#editStatus').val(data[0].status);
+                    $('#editModal').modal('show'); 
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#stock_table').DataTable();
+        });
+    });
+</script>
+
+
+{% endblock %}

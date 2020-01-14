@@ -1,0 +1,47 @@
+/* Global */
+
+body {
+    background-color: #fcfafa;
+}
+
+nav {
+    background-color: #F8F8F8;
+}
+
+tr {
+    cursor:pointer;
+}
+
+
+/* cards */
+
+.card-header {
+    background-color: #F8F8F8;
+}
+
+
+/* Nutritional Tables */
+
+.nt {
+    font-size: small;
+}
+
+/* Recipe Builder Table*/
+
+.rbTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.rbTable, th {
+    padding: 15px;
+}
+
+.rbTable, th, td {
+    border: 1px solid #ddd;
+}
+
+
+
+
+

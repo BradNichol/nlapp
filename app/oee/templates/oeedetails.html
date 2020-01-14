@@ -1,0 +1,257 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    OEE Details
+{% endblock %}
+
+{% block main %}
+
+    <div class="card-deck mt-5">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title">OEE for: NL/{{  oeeInfo.order_id }}</h5>
+                <span class="badge badge-pill badge-primary">Line {{  oeeInfo.line_num }}</span>
+                <span class="badge badge-pill badge-secondary">{{  oeeInfo.operator.first_name }} {{  oeeInfo.operator.surname }}</span>
+            </div>
+            <div class="card-body">
+                <!-- Units produced per hour -->
+                <form action="/oee/{{ oeeInfo.id }}" method="POST">
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="time">Time:</label>
+                            <select class="form-control" id="time" name="time">
+                                <option value="_07">07:00</option>
+                                <option value="_08">08:00</option>
+                                <option value="_09">09:00</option>
+                                <option value="_10">10:00</option>
+                                <option value="_11">11:00</option>
+                                <option value="_12">12:00</option>
+                                <option value="_13">13:00</option>
+                                <option value="_14">14:00</option>
+                                <option value="_15">15:00</option>
+                                <option value="_16">16:00</option>
+                                <option value="_17">17:00</option>
+                                <option value="_18">18:00</option>
+                                <option value="_19">19:00</option>
+                                <option value="_20">20:00</option>
+                                <option value="_21">21:00</option>
+                                <option value="_22">22:00</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="selector">Selector:</label>
+                            <select id="selector" name="selector" class="form-control" required>
+                                <option>Product</option>
+                                <option>Rejects</option>
+                                <option disabled>-----</option>
+                                <option>Startup</option>
+                                <option>Quality Check</option>
+                                <option>Breaks</option>
+                                <option>Change Over</option>    
+                                <option>Waiting for Blends</option>
+                                <option>Clean Down</option>
+                                <option>Extruder Setup</option>
+                                <option>Extruder Sensor</option>
+                                <option>Extruder Cross Transfer</option>
+                                <option>Enrober</option>
+                                <option>Tempering</option>
+                                <option>Cooling Tunnel</option>
+                                <option>Tunnel Cross Transfer</option>
+                                <option>Wrapper Setup</option>
+                                <option>Wrapper Film Change</option>
+                                <option>Printer Fault</option>
+                                <option>Metal Detector</option>
+                                <option>L Sealer Fault</option>
+                                <option>Production Trial</option>
+                                <option>Clean Down</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="unitData">Units:</label>
+                            <input type="number" min="0" id="unitData" name="unitData" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </div>
+                </form>
+
+                
+            </div>
+            
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Overview</h4>
+                <hr/>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="am-tab" data-toggle="tab" href="#am" role="tab" aria-controls="am" aria-selected="true">AM</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="pm-tab" data-toggle="tab" href="#pm" role="tab" aria-controls="pm" aria-selected="false">PM</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="am" role="tabpanel" aria-labelledby="am-tab">
+                        <!-- AM data-->
+                        {% if oeeStats %}
+                        <div class="table-responsive"> 
+                            <table class="rbTable mt-2"o id="recipeTable">
+                                <thead>
+                                    <tr>
+                                        <td>Type</td>    
+                                        <td>07:00</td>
+                                        <td>08:00</td>
+                                        <td>09:00</td>
+                                        <td>10:00</td>
+                                        <td>11:00</td>
+                                        <td>12:00</td>
+                                        <td>13:00</td>
+                                        <td>14:00</td>
+                                    </tr>
+                                </thead>
+                                    {% for row in oeeStats %}
+                                    <tr>
+                                        <td>{{ row.type }}</td>
+                                        <td>{{ row._07 }}</td>
+                                        <td>{{ row._08 }}</td>
+                                        <td>{{ row._09 }}</td>
+                                        <td>{{ row._10 }}</td>
+                                        <td>{{ row._11 }}</td>
+                                        <td>{{ row._12 }}</td>
+                                        <td>{{ row._13 }}</td>
+                                        <td>{{ row._14 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </table>
+                            </div>
+                            
+                    </div>
+                    <div class="tab-pane fade" id="pm" role="tabpanel" aria-labelledby="pm-tab">
+                        <!-- PM data-->
+                        {% if oeeStats[0]['pmSum'] > 0 %}   
+                        <div class="table-responsive"> 
+                            <table class="rbTable mt-2" id="recipeTable">
+                                <thead>
+                                    <tr>
+                                        <td>Type</td>    
+                                        <td>15:00</td>
+                                        <td>16:00</td>
+                                        <td>17:00</td>
+                                        <td>18:00</td>
+                                        <td>19:00</td>
+                                        <td>20:00</td>
+                                        <td>21:00</td>
+                                        <td>22:00</td>
+                                    </tr>
+                                </thead>
+                                    {% for row in oeeStats %}
+                                    <tr>
+                                        <td>{{ row.type }}</td>
+                                        <td>{{ row._15 }}</td>
+                                        <td>{{ row._16 }}</td>
+                                        <td>{{ row._17 }}</td>
+                                        <td>{{ row._18 }}</td>
+                                        <td>{{ row._19 }}</td>
+                                        <td>{{ row._20 }}</td>
+                                        <td>{{ row._21 }}</td>
+                                        <td>{{ row._22 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            {%endif%}
+                            {% endif %}
+                    </div>
+                  </div>
+                       
+            </div>
+        </div>
+    </div>
+
+    <div class="card-deck mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Availability</h5>
+                <p class="card-text">{% if availability %}{{ availability }}%{%endif%}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Performance</h5>
+                <p class="card-text">{% if performance %}{{ performance }}%{%endif%}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quality</h5>
+                <p class="card-text">{% if quality %}{{ quality }}%{%endif%}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">OEE</h5>
+                <p class="card-text">{% if oeeScore %}{{ oeeScore }}%{%endif%}</p>
+            </div>
+        </div>
+    </div>
+
+
+    
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+        // The following code was copied from Stack Overflow: 
+        // https://stackoverflow.com/questions/18999501/bootstrap-3-keep-selected-tab-on-page-refresh
+        
+        if (location.hash) {
+            $('a[href=\'' + location.hash + '\']').tab('show');
+        }
+        let activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('a[href="' + activeTab + '"]').tab('show');
+        }
+
+        $('body').on('click', 'a[data-toggle=\'tab\']', function (e) {
+            e.preventDefault()
+            let tab_name = this.getAttribute('href')
+        if (history.pushState) {
+            history.pushState(null, null, tab_name)
+        }
+        else {
+            location.hash = tab_name
+        }
+        localStorage.setItem('activeTab', tab_name)
+
+        $(this).tab('show');
+            return false;
+        });
+        $(window).on('popstate', function () {
+        let anchor = location.hash ||
+            $('a[data-toggle=\'tab\']').first().attr('href');
+            $('a[href=\'' + anchor + '\']').tab('show');
+        });
+        // end of code snippet from SO
+
+        $(document).on('change', '#unitDta', function(){
+            let oee_id = '{{  oeeInfo.id }}'
+            let units = $(this).val()
+            $.ajax({
+                url:"/oeetest",
+                method:"GET",
+                data:{units},
+                success:function(data){
+                    window.location.href="/oee/" + oee_id
+                }
+            });
+        });
+
+    });
+</script>
+
+
+    
+{% endblock %}
