@@ -43,6 +43,7 @@ def register():
         if pass_length < 6:
             flash('Password must be at least 6 characters.')
             return redirect(url_for('users.register'))
+    
              
         #hash password for protection
         hashed_password = generate_password_hash(request.form.get("password"))
@@ -73,6 +74,9 @@ def login():
 
         # query database
         user = User.query.filter_by(email=email).first()
+        if not user:
+            flash('You need to register an account first')
+            return redirect(url_for('users.register'))
         if user.approved == 'NO':
             flash ('Your account has not been approved. Please contact the administrator.')
             return redirect(url_for('users.login'))
@@ -152,7 +156,7 @@ def reset_request():
     """ Password reset request """
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     if request.method == "POST":
         email = request.form.get('email')
@@ -172,7 +176,7 @@ def reset_token(token):
     """ Enter new password """
     
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
         
     user = User.verify_reset_token(token)
     if user is None:
