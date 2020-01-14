@@ -5,7 +5,6 @@ from app.models import User
 from app import db
 from app.utils import db_connect, serialize, send_reset_email
 from flask_login import login_user, current_user, logout_user, login_required
-from password_strength import PasswordPolicy
 
 users = Blueprint('users', __name__, template_folder='templates')
 
