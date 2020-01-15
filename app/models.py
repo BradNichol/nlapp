@@ -168,13 +168,20 @@ class OEEcalc:
         return round(((self.runtime) / self.shiftLength),2)
 
     def performance(self):
-        return round(((self.totalUnitCount / self.runtime) / self.maxCPM),2)
+        performance = round(((self.totalUnitCount / self.runtime) / self.maxCPM),2)
+        if performance <= 0:
+            return 0
+        else:
+            return performance
 
     def quality(self):
         if self.totalRejects == 0:
             return 1
         else:
-            return round(((self.totalUnitCount - self.totalRejects) / self.totalUnitCount),2)
+            try:
+                return round(((self.totalUnitCount - self.totalRejects) / self.totalUnitCount),2)
+            except ZeroDivisionError:
+                return 0
 
     
     """ calculate OEE score """
