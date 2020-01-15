@@ -17,7 +17,7 @@
                 <!-- Units produced per hour -->
                 <form action="/oee/{{ oeeInfo.id }}" method="POST">
                     <div class="form-row">
-                        <div class="col">
+                        <div class="col-sm">
                             <label for="time">Time:</label>
                             <select class="form-control" id="time" name="time">
                                 <option value="_07">07:00</option>
@@ -38,7 +38,7 @@
                                 <option value="_22">22:00</option>
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-sm">
                             <label for="selector">Selector:</label>
                             <select id="selector" name="selector" class="form-control" required>
                                 <option>Product</option>
@@ -66,7 +66,7 @@
                                 <option>Clean Down</option>
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-sm">
                             <label for="unitData">Units:</label>
                             <input type="number" min="0" id="unitData" name="unitData" class="form-control" required>
                         </div>
