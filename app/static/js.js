@@ -1,5 +1,4 @@
 
-
 // Function to generate download link
 function downloadCSV(csv, filename) {
     let csvFile;
@@ -42,5 +41,3 @@ function exportTableData(filename) {
     // download file
     downloadCSV(csv.join('\n'), filename);
 }
-
-
