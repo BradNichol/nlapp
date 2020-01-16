@@ -126,7 +126,8 @@ def oeedetails(oee_id):
             return redirect(url_for('oee.oeedetails', oee_id=oee_id))
     
 
-    oeeInfo = OEEtbl.query.filter(OEEtbl.id==oee_id).first()    
+    oeeInfo = OEEtbl.query.filter(OEEtbl.id==oee_id).first()
+    
     
     con = db_connect()
     cur = con.cursor()
@@ -166,9 +167,12 @@ def oeedetails(oee_id):
             totalRejects = rejectStats[0]['amRejects'] + rejectStats[0]['pmRejects']
         else:
             totalRejects = 0
+        
+        CPM = oeeInfo.speed
+        
 
         # add data into object
-        data = OEEcalc(totalLostMinutes, totalUnitCount, totalRejects)
+        data = OEEcalc(totalLostMinutes, CPM, totalUnitCount, totalRejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)
@@ -220,14 +224,18 @@ def shiftreport():
                                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS pmShift FROM 
                                     OEE_details WHERE type != 'Product' AND type !='Rejects' AND oee_id = :oee_id  """, {'oee_id':oee_id})
         downtimeStats = cur.fetchall()
+
+        # machine running speed (CPM)
+        query = OEEtbl.query.filter(OEEtbl.id==oee_id).first()
+        CPM = query.speed
+
         
         # chart downtime data
         cur.execute("""SELECT type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS amSum, 
                                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS pmSum 
                                     FROM OEE_details WHERE type != 'Product' AND type !='Rejects' AND oee_id = :oee_id GROUP BY type
                                     """, {'oee_id':oee_id})
-        chart_data = cur.fetchall()
-        
+        chart_data = cur.fetchall()        
 
 
         # calc total lost minutes
@@ -249,7 +257,7 @@ def shiftreport():
         goodCount = totalUnitCount - totalRejects
 
         # add data into object
-        data = OEEcalc(totalLostMinutes, totalUnitCount, totalRejects)
+        data = OEEcalc(totalLostMinutes, CPM, totalUnitCount, totalRejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)

@@ -156,9 +156,9 @@ class OEEtbl(db.Model, UserMixin):
 
 
 class OEEcalc:
-    def __init__(self, totalLostMinutes, totalUnitCount, totalRejects):
+    def __init__(self, totalLostMinutes, CPM, totalUnitCount, totalRejects):
         self.shiftLength = 480
-        self.maxCPM = 60
+        self.maxCPM = CPM
         self.totalLostMinutes = totalLostMinutes
         self.totalUnitCount = totalUnitCount
         self.totalRejects = totalRejects
