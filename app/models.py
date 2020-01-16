@@ -138,6 +138,7 @@ class Orders(db.Model, UserMixin):
     batch_size = db.Column(db.Integer, unique=False, nullable=False)
 
     customers = db.relationship('Customer', backref='customers')
+    oee = db.relationship('OEEtbl', backref='orders')
 
 
 class OEEtbl(db.Model, UserMixin):
