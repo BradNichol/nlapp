@@ -47,7 +47,7 @@ def adviceList(adviceTitle):
         text = """
         <p>This sheet is designed to capture all of the events that happen throughout a shift.</p>
         <strong>Note</strong>
-        <p>As a shift is classed as any 8 hour period, so the start time of your shift doesn't matter.
+        <p>As a shift is classed as any 8 hour period, the start time of your shift doesn't matter.
         For example, if your shift starts at 9am, data missing for 7am and 8am will not affect
         any scores.</p>
         <strong>How To:</strong>
