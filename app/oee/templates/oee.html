@@ -76,11 +76,11 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="wOrder_id">Order No.</label>
+                                <label for="wOrder_id">Batch No.</label>
                                 <select class="form-control" id="wOrder_id" name="wOrder_id" autocomplete="off">
                                     <option selected="true" disabled></option>
-                                    {% for row in order_numbers %}
-                                    <option value="{{row.order_id}}" >{{ row.order_id }}</option>
+                                    {% for row in batch_code %}
+                                    <option value="{{row.order_id}}" >{{ row.batch_code }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

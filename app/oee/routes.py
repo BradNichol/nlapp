@@ -18,10 +18,10 @@ def viewOee():
 
 
     # for datalist menu
-    order_numbers = Orders.query.filter(Orders.status != 'Completed').all()
+    batch_code = Orders.query.filter(Orders.status != 'Completed').all()
 
 
-    return render_template('oee.html', oee = oee_overview, order_numbers=order_numbers)
+    return render_template('oee.html', oee = oee_overview, batch_code=batch_code)
 
 
 @oee.route("/oee/add", methods=["POST"])

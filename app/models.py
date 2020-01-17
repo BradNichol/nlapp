@@ -136,7 +136,7 @@ class Orders(db.Model, UserMixin):
     status = db.Column(db.String(20), unique=False, nullable=False, default='New')
     units = db.Column(db.Integer, unique=False, nullable=False, default=0)
     batch_size = db.Column(db.Integer, unique=False, nullable=False)
-
+    batch_code = db.Column(db.Integer, unique=True, nullable=False, default=0)
     customers = db.relationship('Customer', backref='customers')
     oee = db.relationship('OEEtbl', backref='orders')
 

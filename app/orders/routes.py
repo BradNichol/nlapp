@@ -24,11 +24,12 @@ def addOrders():
 
     if request.method == "POST":
 
-        # store ingredient data from form 
+        # store order data from form 
         cid = request.form.get('customer_id')
         order_date = datetime.strptime(request.form.get('order_date'), '%Y-%m-%d')
         rname = request.form.get('recipe')
         units = request.form.get('units')
+        batch_code = request.form.get('batch_code')
 
         
         con = db_connect()
@@ -45,7 +46,7 @@ def addOrders():
         version_number = results[0]['version_number']
         
         # add into database
-        order = Orders(customer_id=cid, order_date=order_date, rname=rname, recipe_version_number=version_number, units=units, batch_size=batchSize)
+        order = Orders(customer_id=cid, order_date=order_date, rname=rname, recipe_version_number=version_number, units=units, batch_size=batchSize, batch_code=batch_code)
         db.session.add(order)
         db.session.commit()
 

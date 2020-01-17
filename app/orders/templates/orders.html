@@ -29,6 +29,7 @@
                                 <th>Order Date</th>
                                 <th>Recipe</th>
                                 <th>Units</th>
+                                <th>Batch No.</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,6 +49,7 @@
                                 <td>{{ row.order_date.strftime("%d/%m/%Y") }}</td>
                                 <td>{{ row.rname }}</td>
                                 <td>{{ row.units }}</td>
+                                <td>{{ row.batch_code }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>    
@@ -87,7 +89,7 @@
                         <h5>Order Details</h5>
                         <hr/>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="recipe">Recipe</label>
                                 <input type="text" list="recipe_list" class="form-control" id="recipe" name="recipe" autocomplete="off">
                                     <datalist id="recipe_list">
@@ -96,9 +98,13 @@
                                         {% endfor %}
                                     </datalist>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="units">Units</label>
                                 <input type="number" class="form-control" id="units" name="units" min="1" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="batch_code">Batch No.</label>
+                                <input type="number" class="form-control" id="batch_code" name="batch_code" min="1" required>
                             </div>
                         </div>
                 </div>
