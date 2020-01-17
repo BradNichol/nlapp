@@ -111,7 +111,10 @@ def oeedetails(oee_id):
                 # get total ordered units
                 cur.execute("""SELECT units, status FROM orders WHERE order_id=:order_id""", {'order_id':order_id})
                 row = cur.fetchall()
-                orderedUnits = row[0]['units']
+                try:
+                    orderedUnits = row[0]['units']
+                except:
+                    orderedUnits = 0
 
                 if totalUnits >= orderedUnits:
                 
