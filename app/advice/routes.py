@@ -21,17 +21,18 @@ def adviceList(adviceTitle):
                 <strong>How to:</strong>
                 <ol>
                     <li>Click Add button.</li>
-                    <li>Select line number & order number.</li>
+                    <li>Select line number & batch number.</li>
                     <li>Enter line speed and number of total operators.</li>
                     <li>Click Save.</li>
                 </ol>
 
                 <strong>Order Number Info</strong>
-                <p>An OEE sheet cannot be created without an order number. An order number will
+                <p>An OEE sheet cannot be created without a batch number. An batch number will
                 only be available if:</p>
                 <ol>
                     <li>An order has been created</li>
                     <li>An orders status is not 'Complete'.</li>
+                    <li>The order created has a batch number entered</li>
                 </ol>
                 <p>Please note, the order status is automatically updated to 'Complete' if the total amount 
                 produced is equal to, or greater than, the order quantity. You can view all available 
