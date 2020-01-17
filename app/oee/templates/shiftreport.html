@@ -134,9 +134,9 @@
                         {{item}}, 
                     {% endfor %}],
             backgroundColor: "rgba(75,192,192,0.4)"
+            
         }]
-        
-        
+
     };
 
     // get chart canvas
@@ -145,7 +145,16 @@
     // create chart using canvas
     let dtChart = new Chart(ctx, {
         type: 'bar',
-        data: dtData
+        data: dtData,
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
         
     });
 </script>
