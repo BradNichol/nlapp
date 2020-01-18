@@ -34,9 +34,9 @@
     
   <div class="card mt-4">
     <div class="card-body">
-        <h4 class="card-title">Weekly Units Produced (Demo)</h4>
+        <h4 class="card-title">Daily Units Produced</h4>
         <hr/>
-        <canvas id="pOverview" width="350" height="150"></canvas>
+        <canvas id="dailyUnitChart" width="350" height="150"></canvas>
     </div>
   </div>
 
@@ -44,19 +44,42 @@
 </div>
 
 <script>
-    let pData = {
-        label: 'Units',
-        data: ['16000' , '14500', '18000', '20000', '13000', ''],
-        backgroundColor: '#d5d9f0'
+    let totalDailyUnitsData = {
+        labels: [
+                {% for item in labels %}
+                    "{{ item }}",
+                {% endfor %}
+                ],
+        
+        datasets: [{
+            label: '{{legend}}',
+            data: [
+                    {% for item in values %}
+                        {{item}}, 
+                    {% endfor %}],
+            backgroundColor: "rgba(75,192,192,0.4)"
+            
+        }]
+
     };
 
-    let ctx = document.getElementById('pOverview').getContext('2d');
-    let pChart = new Chart(ctx, {
+    // get chart canvas
+    let ctx = document.getElementById('dailyUnitChart').getContext('2d');
+    
+    // create chart using canvas
+    let totalDailyUnitsChart = new Chart(ctx, {
         type: 'bar',
-        data: {
-            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-            datasets: [pData]
+        data: totalDailyUnitsData,
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
+        
     });
 </script>
 {% endblock %}
