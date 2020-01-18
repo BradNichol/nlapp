@@ -64,7 +64,7 @@ def login():
     """Log user in """
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     if request.method == "POST":
 
