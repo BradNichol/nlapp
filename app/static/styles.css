@@ -26,18 +26,18 @@ tr {
     font-size: small;
 }
 
-/* Recipe Builder Table*/
+/* Form table */
 
-.rbTable {
+.fTable {
     border-collapse: collapse;
     width: 100%;
 }
 
-.rbTable, th {
+.fTable, th {
     padding: 15px;
 }
 
-.rbTable, th, td {
+.fTable, th, td {
     border: 1px solid #ddd;
 }
 
