@@ -28,18 +28,17 @@ tr {
 
 /* Form table & input style */
 
-.fTable {
+table.fTable {
     border-collapse: collapse;
     width: 100%;
-}
-
-.fTable, th {
-    padding: 15px;
-    font-weight: bold;
-}
-
-.fTable, th, td {
     border: 1px solid #ddd;
+}
+
+table.fTable th, .fTable td {
+    border: 1px solid #ddd;
+}
+
+table.fTable th {
     font-weight: bold;
 }
 
