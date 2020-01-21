@@ -102,7 +102,8 @@ class Customer(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True, nullable=False)
     
     recipes = db.relationship('Recipes', backref='customer')
-    #orders = db.relationship('Orders', backref='customer')
+    
+    products = db.relationship('Product', backref='customer')
 
 
 
@@ -123,6 +124,8 @@ class Recipes(db.Model, UserMixin):
 
     orders = db.relationship('Orders', backref='recipe')
 
+    product = db.relationship('Product', backref='recipe')
+
 
 class Orders(db.Model, UserMixin):
 
@@ -130,7 +133,7 @@ class Orders(db.Model, UserMixin):
     
     order_id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), unique=False, nullable=False)
-    order_date = db.Column(db.DateTime, nullable=False, default='')
+    order_date = db.Column(db.Date, nullable=False, default='')
     rname = db.Column(db.String(30), db.ForeignKey('recipes.rname'), unique=False, nullable=False)
     recipe_version_number = db.Column(db.Integer, unique=False, nullable=False)
     status = db.Column(db.String(20), unique=False, nullable=False, default='New')
@@ -149,11 +152,52 @@ class OEEtbl(db.Model, UserMixin):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), unique=False, nullable=False)
     operator_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=False, nullable=False)
     line_num = db.Column(db.Integer, unique=False, nullable=False)
-    start_date = db.Column(db.DateTime, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
     speed = db.Column(db.Integer, unique=False, nullable=False)
     actual_operators = db.Column(db.Integer, unique=False, nullable=False)
+    planned_output = db.Column(db.Integer, unique=False, nullable=False, default=0)
+
+class Product(db.Model, UserMixin):
+
+    __tablename__='products'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_sku = db.Column(db.String(40), unique=True, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), unique=False, nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), unique=False, nullable=False)
+    run_rate = db.Column(db.Integer, unique=False, nullable=False)
+
+    schedule_details = db.relationship('ScheduleDetails', backref='products')
 
 
+
+class Schedule(db.Model, UserMixin):
+
+    __tablename__='schedule'
+
+    id = db.Column(db.Integer, primary_key=True)
+    wc_date = db.Column(db.Date, nullable=False)
+    format_date = db.Column(db.String(10), nullable=False)
+
+    schedule_details = db.relationship('ScheduleDetails', backref='schedule')
+
+
+class ScheduleDetails (db.Model, UserMixin):
+
+    __tablename__='schedule_details'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    schedule_id = db.Column(db.Integer, db.ForeignKey('schedule.id'), unique=False, nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), unique=False, nullable=False)
+    line_num = db.Column(db.Integer, unique=False, nullable=False)
+    monday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    tuesday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    wednesday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    thursday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    friday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    saturday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    sunday = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    
 
 class OEEcalc:
     def __init__(self, totalLostMinutes, CPM, totalUnitCount, totalRejects):
