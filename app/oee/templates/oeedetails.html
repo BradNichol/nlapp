@@ -83,8 +83,11 @@
                         <button type="submit" class="btn btn-primary btn-sm">Save</button>
                     </div>
                 </form>
-
-                
+                {% if planned_output > 0 %}    
+                <p>Planned output: {{ planned_output }} units</p>
+                {% else %}
+                <p>Planned output: Not Set</p>
+                {% endif %}
             </div>
             
         </div>
