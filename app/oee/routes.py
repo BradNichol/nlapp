@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint
 from app import db
 from flask_login import login_required, current_user
-from app.utils import db_connect, get_planned_output
+from app.utils import db_connect, get_planned_output, get_conformance_to_plan
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -210,6 +210,7 @@ def shiftreport():
     if request.method == "POST":
         oee_id = request.form.get('shiftSelect')
 
+
         if oee_id == None:
             flash('No shift reports available')
             return redirect(url_for('oee.shiftreport'))
@@ -272,7 +273,7 @@ def shiftreport():
         except TypeError:
             totalRejects = 0
         # calc good count
-        goodCount = totalUnitCount - totalRejects
+        good_count = totalUnitCount - totalRejects
 
         # add data into object
         data = OEEcalc(totalLostMinutes, CPM, totalUnitCount, totalRejects)
@@ -282,6 +283,9 @@ def shiftreport():
         performance = round((data.performance()*100),2)
         quality = round((data.quality()*100),2)
         oeeScore = round((data.OEEscore()*100),2)
+
+        # get conformance To Plan (CTP) score
+        ctp = get_conformance_to_plan(oee_id, good_count)
         
        
         # format lost time
@@ -291,7 +295,7 @@ def shiftreport():
         shiftLength = timedelta(minutes=data.shiftLength)
 
         # format good count
-        goodCount = f'{goodCount:,}'
+        good_count = f'{good_count:,}'
 
         # format total unit count
         totalUnitCount = f'{totalUnitCount:,}'
@@ -317,10 +321,10 @@ def shiftreport():
 
         oee_list = OEEtbl.query.order_by(desc(OEEtbl.start_date)).limit(20).all()
 
-        return render_template('shiftreport.html', goodCount=goodCount, oee_list=oee_list, oeeStats=oeeStats, 
+        return render_template('shiftreport.html', good_count=good_count, oee_list=oee_list, oeeStats=oeeStats, 
                                 availability=availability, performance=performance, quality=quality, oeeScore=oeeScore, 
                                 totalLostMinutes=totalLostMinutes, totalUnitCount=totalUnitCount, totalRejects=totalRejects, 
-                                shiftLength=shiftLength, runtime=runtime, legend=legend, labels=labels, values=values, oeeInfo=oeeInfo)
+                                shiftLength=shiftLength, runtime=runtime, legend=legend, labels=labels, values=values, oeeInfo=oeeInfo, ctp=ctp)
 
 
     oee_list = OEEtbl.query.order_by(desc(OEEtbl.start_date)).limit(20).all()
