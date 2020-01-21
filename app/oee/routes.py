@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint
 from app import db
 from flask_login import login_required, current_user
-from app.utils import db_connect
+from app.utils import db_connect, get_planned_output
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -41,8 +41,17 @@ def addOee():
         # get date
         todays_date = date.today()
 
+        planned_output = get_planned_output(line_num)
+        
+        # stop new sheet creation if one already exists for that line
+        sheet_check = OEEtbl.query.filter_by(start_date=todays_date, line_num=line_num).first()
+        if sheet_check:
+            flash('An OEE sheet has already been created today for that line number.')
+            return redirect(url_for('oee.viewOee'))
+
+
         # add new OEE sheet
-        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators)
+        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators, planned_output=planned_output)
         db.session.add(new_oee)
         db.session.commit()
 
@@ -140,7 +149,12 @@ def oeedetails(oee_id):
                                     ORDER BY (CASE type WHEN 'Product' THEN 1 END) DESC""", {'oee_id':oee_id})
     
     oeeStats = cur.fetchall()
-    
+
+    # get planned output (data is stored in OEE but originally set in schedule details. See utils)
+    query = OEEtbl.query.filter_by(id=oee_id).first()
+
+    planned_output = query.planned_output
+   
 
     """
     --------------
@@ -183,9 +197,10 @@ def oeedetails(oee_id):
         quality = round((data.quality()*100),2)
         oeeScore = round((data.OEEscore()*100),2)
 
-        return render_template('oeedetails.html', oeeInfo=oeeInfo, oeeStats=oeeStats, availability=availability, performance=performance, quality=quality, oeeScore=oeeScore)
+        
+        return render_template('oeedetails.html', oeeInfo=oeeInfo, oeeStats=oeeStats, availability=availability, performance=performance, quality=quality, oeeScore=oeeScore, planned_output=planned_output)
     else:
-        return render_template('oeedetails.html', oeeInfo=oeeInfo, oeeStats=oeeStats)
+        return render_template('oeedetails.html', oeeInfo=oeeInfo, oeeStats=oeeStats, planned_output=planned_output)
 
 
 @oee.route("/oee/reports/shift", methods=["GET", "POST"])
