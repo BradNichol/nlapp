@@ -105,14 +105,15 @@
                 </div>
                 <div class="modal-body">
 
-                    <form action="/products/add" method="POST">
+                    <form action="/products/edit" method="POST">
+                        <input type="hidden" id ="id" name="id"/>
                         <div class="form-group">
                             <label for="ingredient">Product (SKU)</label>
-                            <input type="text" class="form-control" id="product_sku" name="product_sku" autocomplete="off" required>
+                            <input type="text" class="form-control" id="editProductSku" name="editProductSku" autocomplete="off" required>
                         </div>
                             <div class="form-group">
                                 <label for="cname">Customer Name</label>
-                                <select class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                <select class="form-control" id="editCustomerId" name="editCustomerId" required autocomplete="off">
                                         {% for row in customers %}
                                         <option value="{{row.id}}">{{ row.cname }}</option>
                                         {% endfor %}
@@ -120,7 +121,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="recipe">Recipe</label>
-                                <select class="form-control" id="recipe" name="recipe" autocomplete="off">
+                                <select class="form-control" id="editRecipeId" name="editRecipeId" autocomplete="off">
                                     {% for row in recipes %}
                                     <option value="{{row.id}}" >{{ row.rname }}</option>
                                     {% endfor %}
@@ -128,7 +129,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="run_rate">Run Rate (CPM)</label>
-                                <input type="number" min="0" class="form-control" id="run_rate" name="run_rate" autocomplete="off">
+                                <input type="number" min="0" class="form-control" id="editRunRate" name="editRunRate" autocomplete="off">
                             </div>
                         
                 </div>
@@ -148,23 +149,18 @@
                 $(document).ready(function() {
 
                     $(document).on('click', '.edit_product', function(){
-                        let product_code = $(this).attr("id");
+                        let id = $(this).attr("id");
                         $.ajax({
-                            url:"/ingredients/edit",
+                            url:"/products/edit",
                             method:"GET",
-                            data:{product_code},
+                            data:{id},
                             dataType:"json",
                             success:function(data){
                                 $('#id').val(data[0].id);
-                                $('#product_name').val(data[0].name);
-                                $('#editProtein').val(data[0].protein);
-                                $('#editFats').val(data[0].fats);
-                                $('#editSaturates').val(data[0].saturates);
-                                $('#editCarbs').val(data[0].carbohydrates);
-                                $('#editSugars').val(data[0].sugars);
-                                $('#editFibre').val(data[0].fibre);
-                                $('#editSalt').val(data[0].salt);
-                                $('#editSodium').val(data[0].sodium);
+                                $('#editProductSku').val(data[0].product_sku);
+                                $('#editCustomerId').val(data[0].customer_id);
+                                $('#editRecipeId').val(data[0].recipe_id);
+                                $('#editRunRate').val(data[0].run_rate);
                                 $('#editModal').modal('show'); 
                             }
                         });

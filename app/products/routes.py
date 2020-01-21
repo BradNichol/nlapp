@@ -9,7 +9,7 @@ products = Blueprint('products', __name__, template_folder='templates')
 
 @products.route("/products", methods=["GET", "POST"])
 @login_required
-def showproducts():
+def viewproducts():
 
     """ Show all produicts """
 
@@ -41,46 +41,42 @@ def addproduct():
         db.session.commit()
 
         flash('Product added')
-        return redirect(url_for('products.showproducts'))
+        return redirect(url_for('products.viewproducts'))
 
 
 @products.route("/products/edit", methods=["GET", "POST"])
 @login_required
 def edit():
-    """ Update Ingredients """
+    """ Update Product """
     
     if request.method == "POST":
         
-        # get id and name for ingredient
+        # get id and name for product
         pid = request.form.get('id')
-        name = request.form.get('product_name')
-        protein = request.form.get('editProtein')
-        carbs = request.form.get('editCarbs')
-        sugars = request.form.get('editSugars')
-        fat = request.form.get('editFats')
-        saturates = request.form.get('editSaturates')
-        fibre = request.form.get('editFibre')
-        salt = request.form.get('editSalt')
-        sodium = request.form.get('editSodium')
+        product_sku = request.form.get('editProductSku')
+        customer_id = request.form.get('editCustomerId')
+        recipe_id = request.form.get('editRecipeId')
+        run_rate = request.form.get('editRunRate')
 
-        # update ingredient
-        con = db_connect()
-        cur = con.cursor()
-        sql = """UPDATE ingredients SET name=?, protein=?, carbohydrates=?, sugars=?, fats=?, saturates=?, fibre=?, salt=?, sodium=? WHERE id=?"""
 
-        cur.execute(sql, (name, protein, carbs, sugars, fat, saturates, fibre, salt, sodium, pid ))
-        con.commit()
-        con.close()
+        # update product
+        product = Product.query.filter_by(id=pid).first()
+        product.product_sku = product_sku
+        product.customer_id = customer_id
+        product.recipe_id = recipe_id
+        product.run_rate = run_rate
+        db.session.commit()
 
-        return redirect(url_for('ingredients.showIngredients'))
+        flash('Successful. Product updated.')
+        return redirect(url_for('products.viewproducts'))
 
     # returns JSON data to display the correct ingredient that user wants to edit on modal
     elif request.method == "GET":
         
-        product_code = request.args.get("product_code")
+        id = request.args.get("id")
         con = db_connect()
         cur = con.cursor()
-        cur.execute("SELECT * FROM ingredients WHERE product_code = :product_code", {'product_code': product_code})
+        cur.execute("SELECT * FROM products WHERE id = :id", {'id': id})
         result = cur.fetchall()
 
         return jsonify(serialize(cur, result))
