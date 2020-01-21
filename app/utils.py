@@ -1,7 +1,7 @@
 import sqlite3
 from app import mail
 from flask_mail import Message
-from app.models import User, Schedule, ScheduleDetails
+from app.models import User, Schedule, ScheduleDetails, OEEtbl
 from flask import url_for
 from datetime import datetime, date, timedelta
 from sqlalchemy import func
@@ -70,3 +70,18 @@ def get_planned_output(line_num):
     
     else:
         return 0
+
+
+def get_conformance_to_plan(oee_id, good_count):
+
+    """ Conformance To Plan (CTP) score """
+
+    query = OEEtbl.query.filter_by(id=oee_id).first()
+    planned_output = query.planned_output
+
+    try:
+        ctp = round(((good_count / planned_output)*100),1)
+    except ZeroDivisionError:
+        ctp = 0
+    
+    return ctp
