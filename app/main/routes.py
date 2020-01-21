@@ -4,7 +4,6 @@ import sqlite3 as sqlite
 from app.models import User
 from flask_login import current_user, login_required
 from app.utils import db_connect
-import calendar
 from datetime import datetime, date, timedelta
 
 
@@ -58,7 +57,7 @@ def index():
 
     labels = []
     for i in totalWeeklyUnits:
-        day = datetime.strptime(i[0], '%Y-%m-%d %H:%M:%S.%f')
+        day = datetime.strptime(i[0], '%Y-%m-%d')
         labels.append(day.strftime('%A'))
     
     values = []
