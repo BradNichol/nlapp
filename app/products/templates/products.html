@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Products
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="card shadow mt-5">
+        <div class="card-header text-center">
+            <h3 class="card-title">All Products</h3>
+        </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProduct">Add Product</button>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive mt-5">
+                    <table id="product_table" class="display compact table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Product (SKU)</th>
+                                <th>Customer</th>
+                                <th>Recipe</th>
+                                <th>Run Rate (CPM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in products %}
+                            <tr class="edit_product" id="{{ row.id }}">
+                                    <td>{{ row.product_sku }}</td>
+                                    <td>{{ row.customer.cname }}</td>
+                                    <td>{{ row.recipe.rname }}</td>
+                                    <td>{{ row.run_rate }}</td>
+                            </tr>
+                            {% endfor %}
+
+                                
+                        </tbody>    
+                    </table>
+                    </div>
+                    </div>
+                </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProduct" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Product</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/products/add" method="POST">
+                            <div class="form-group">
+                                <label for="ingredient">Product (SKU)</label>
+                                <input type="text" class="form-control" id="product_sku" name="product_sku" autocomplete="off" required>
+                            </div>
+                                <div class="form-group">
+                                    <label for="cname">Customer Name</label>
+                                    <select class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                            {% for row in customers %}
+                                            <option value="{{row.id}}">{{ row.cname }}</option>
+                                            {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipe_id">Recipe</label>
+                                    <select class="form-control" id="recipe_id" name="recipe_id" autocomplete="off">
+                                        {% for row in recipes %}
+                                        <option value="{{row.id}}" >{{ row.rname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="run_rate">Run Rate (CPM)</label>
+                                    <input type="number" min="0" class="form-control" id="run_rate" name="run_rate" autocomplete="off">
+                                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Product</button>
+                    </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="/products/add" method="POST">
+                        <div class="form-group">
+                            <label for="ingredient">Product (SKU)</label>
+                            <input type="text" class="form-control" id="product_sku" name="product_sku" autocomplete="off" required>
+                        </div>
+                            <div class="form-group">
+                                <label for="cname">Customer Name</label>
+                                <select class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                        {% for row in customers %}
+                                        <option value="{{row.id}}">{{ row.cname }}</option>
+                                        {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe">Recipe</label>
+                                <select class="form-control" id="recipe" name="recipe" autocomplete="off">
+                                    {% for row in recipes %}
+                                    <option value="{{row.id}}" >{{ row.rname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="run_rate">Run Rate (CPM)</label>
+                                <input type="number" min="0" class="form-control" id="run_rate" name="run_rate" autocomplete="off">
+                            </div>
+                        
+                </div>
+                <div class="modal-footer">
+                    
+                    <!-- Deleting ingredients can affect app in other areas - recheck and maybe only assign to super user 
+                        <button type="submit" class="btn btn-danger" formaction="/delete">Delete</button> -->
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <script>
+                $(document).ready(function() {
+
+                    $(document).on('click', '.edit_product', function(){
+                        let product_code = $(this).attr("id");
+                        $.ajax({
+                            url:"/ingredients/edit",
+                            method:"GET",
+                            data:{product_code},
+                            dataType:"json",
+                            success:function(data){
+                                $('#id').val(data[0].id);
+                                $('#product_name').val(data[0].name);
+                                $('#editProtein').val(data[0].protein);
+                                $('#editFats').val(data[0].fats);
+                                $('#editSaturates').val(data[0].saturates);
+                                $('#editCarbs').val(data[0].carbohydrates);
+                                $('#editSugars').val(data[0].sugars);
+                                $('#editFibre').val(data[0].fibre);
+                                $('#editSalt').val(data[0].salt);
+                                $('#editSodium').val(data[0].sodium);
+                                $('#editModal').modal('show'); 
+                            }
+                        });
+                    });
+
+                    
+                    $('#product_table').DataTable({
+                        "pageLength" : 10
+                    });
+
+
+
+                } );
+            </script>
+
+{% endblock %}
