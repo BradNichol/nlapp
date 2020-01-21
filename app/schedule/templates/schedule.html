@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Schedule
+{% endblock %}
+
+
+{% block main %}
+
+
+    <div class="card shadow mt-5">
+        <h3 class="card-header text-center">Weekly Schedule</h3>
+        <div class="card-body">
+                <div class="row text-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addschedule">Add Schedule</button>
+                    </div>
+                </div>
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <div class="table-responsive mt-5">
+                    <table class="display table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Week Commencing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in schedule %}
+                            <tr class="view_week" id="{{row.format_date}}">
+                                <td>{{ row.wc_date.strftime("%d/%m/%Y") }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>    
+                    </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Add Schedule Modal -->
+    <div class="modal fade" id="addschedule" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Schedule</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/schedule/add" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="weekCommencementDate">Week Commencement Date</label>
+                                <input type="date" class="form-control" id="weekCommencementDate" name="weekCommencementDate">
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+<script>
+    $(document).ready(function() {
+
+        $(document).on('click', '.view_week', function(){
+            let format_date = $(this).attr("id");
+            window.location.href="/schedule/" + format_date
+        });
+
+
+        $(document).ready(function() {
+            $('#orders_table').DataTable();
+        });
+    });
+</script>
+
+
+{% endblock %}

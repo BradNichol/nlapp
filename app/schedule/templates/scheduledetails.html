@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Schedule Overview
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="card-deck mt-5">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title">Week Commencing: {{ schedule.format_date }}</span></h5>
+            
+            </div>
+            <div class="card-body">
+
+                <div class="row text-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addproduct">Add Product</button>
+                    </div>
+                </div>
+                {% if schedule_details %}
+
+                <div class="table-responsive mt-4"> 
+                    <table class="fTable" id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th width="20%">Product (SKU)</th>
+                                <th width="10%">Line Number</th>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th>Sunday</th>
+                            </tr>
+                        </thead>
+                        
+                            <form action="/schedule/details/edit" method="POST">
+                            {% for row in schedule_details %}    
+                            <tr>
+
+                                <td>{{ row.products.product_sku }}</td>
+                                <td>{{ row.line_num }}</td>
+                                <td><input type="number" class="form-control fTableFormElements" id="monday" name="monday" min="0" value="{{row.monday}}"></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="tuesday" name="tuesday" min="0" value="{{row.tuesday}}""></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="wednesday" name="wednesday" min="0" value="{{row.wednesday}}"></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="thursday" name="thursday" min="0" value="{{row.thursday}}"></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="friday" name="friday" min="0" value="{{row.friday}}"></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="saturday" name="saturday" min="0" value="{{row.saturday}}"></td>
+                                <td><input type="number" class="form-control fTableFormElements" id="sunday" name="sunday" min="0" value="{{row.sunday}}"></td>
+                                <input type="hidden" id="product_id" name="product_id" value="{{row.product_id }}">
+                                <input type="hidden" id="line_num" name="line_num" value="{{row.line_num }}">
+                                <input type="hidden" id="schedule_id" name="schedule_id" value="{{ schedule.id }}">
+                                <input type="hidden" id="format_date" name="format_date" value="{{ schedule.format_date }}">
+                            </tr>
+                            {% endfor %}
+                        
+                    </table>
+                </div>
+                
+                <div class="row justify-content-end">
+                    <div class="col-lg-4 mt-5">
+                        <button class="btn btn-block btn-secondary" type="submit">Update</button>
+                    </div>
+                </div>
+                
+                    </form>
+                    {% endif %}
+            </div>
+            
+        </div>
+
+    </div>
+
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addproduct" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Product</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/schedule/details/add" method="POST">
+                        <input type="hidden" id="format_date" name="format_date" value="{{ schedule.format_date }}">
+                        <input type="hidden" id="schedule_id" name="schedule_id" value="{{ schedule.id }}">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="product_id">Product:</label>
+                                <select class="form-control" id="product_id" name="product_id" required>
+                                    <option disabled selected></option>
+                                    {% for row in products %}
+                                    <option value="{{ row.id }}">{{ row.product_sku }}</option>
+                                    {% endfor %}
+                                </select> 
+                            </div>
+                            <div class="form-group col">
+                                <label for="line_num">Line Number:</label>
+                                <select class="form-control" id="line_num" name="line_num" required>
+                                    <option disabled selected></option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+
+<script>
+    $(document).ready(function() {
+
+
+        $(document).on('click', '#edit_order', function(){
+            let order_id = ''
+            $.ajax({
+                url:"/orders/edit",
+                method:"GET",
+                data:{order_id},
+                dataType:"json",
+                success:function(data){
+                    $('#editId').val(data[0].order_id);
+                    $('#editRecipe').val(data[0].rname);
+                    $('#editUnits').val(data[0].units);
+                    $('#editStatus').val(data[0].status);
+                    $('#editModal').modal('show'); 
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#orders_table').DataTable();
+        });
+
+        
+    });
+</script>
+
+
+    
+{% endblock %}
