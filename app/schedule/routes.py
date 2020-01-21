@@ -34,10 +34,24 @@ def addschedule():
 
     if request.method == "POST":
 
-        # get data
+        # get date
         
-        wc_date = datetime.strptime(request.form.get('weekCommencementDate'), '%Y-%m-%d')
+        wc_date = datetime.strptime(request.form.get('weekCommencementDate'), '%Y-%m-%d').date()
         format_date = datetime.strftime(wc_date, "%d-%m-%Y")
+
+        # make sure user entered a week commencement date
+        today_index = date.weekday(wc_date)
+        if today_index != 0:
+            flash('Unsuccessful. You can only enter a date starting on a Monday.')
+            return redirect(url_for('schedule.viewschedule'))
+        
+        # stop double entry of same wc date
+        check = Schedule.query.filter_by(wc_date=wc_date).first()
+        print(check)
+        if check:
+            flash('Unsuccessful. You have already entered a date for that week.')
+            return redirect(url_for('schedule.viewschedule'))
+        
 
         # add into database
         schedule = Schedule(wc_date=wc_date, format_date=format_date)
