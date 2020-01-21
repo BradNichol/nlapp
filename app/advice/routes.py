@@ -15,32 +15,18 @@ def adviceList(adviceTitle):
                     <li>An OEE sheet must be created per individual shift.</li>
                     <li>A shift is classed as any 8 hour period.</li>
                     <li>A shift is per production line. 
-                    If two lines are running, two OEE sheets need to be created.</li>
+                    <li>If two lines are running, two OEE sheets need to be created.</li>
                 </ul>
 
                 <strong>How to:</strong>
                 <ol>
                     <li>Click Add button.</li>
-                    <li>Select line number & batch number.</li>
+                    <li>Select line number.</li>
                     <li>Enter line speed and number of total operators.</li>
                     <li>Click Save.</li>
                 </ol>
 
-                <strong>Order Number Info</strong>
-                <p>An OEE sheet cannot be created without a batch number. An batch number will
-                only be available if:</p>
-                <ol>
-                    <li>An order has been created</li>
-                    <li>An orders status is not 'Complete'.</li>
-                    <li>The order created has a batch number entered</li>
-                </ol>
-                <p>Please note, the order status is automatically updated to 'Complete' if the total amount 
-                produced is equal to, or greater than, the order quantity. You can view all available 
-                orders, and their status, by visiting the Orders section. </p>
-
-                <p>If you need to create another OEE sheet for a job that has a status of complete, 
-                go to the Orders section, select the order and use the Edit button to update the status 
-                to 'In Progress'.</p>
+                
         """
         return text
 
@@ -62,6 +48,11 @@ def adviceList(adviceTitle):
         <strong>Notes</strong>
         <p>The scores are updated as new data is entered, and are calculated against
         a full day.</p>
+
+        <strong>Planned Output</strong>
+        <p>The planned output value has been set by Scheduling, and against previously
+        agreed targets.</p>
+    
 
 
         """
