@@ -27,7 +27,6 @@
                     <table id="oee_table" class="display table table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Order No.</th>
                                 <th>Date</th>
                                 <th>Operator</th>
                                 <th>Line Number</th>
@@ -36,7 +35,6 @@
                         <tbody>
                             {% for row in oee %}
                             <tr class="view_oee" id="{{ row.id}}">
-                                <td>NL/{{ row.order_id }}</td>
                                 <td>{{ row.start_date.strftime("%d/%m/%Y") }}</td>
                                 <td>{{ row.operator.first_name }} {{ row.operator.surname }}</td>
                                 <td>{{ row.line_num }}</td>
@@ -141,7 +139,7 @@
         $(document).ready(function() {
             $('#oee_table').DataTable({
                 "pageLength" : 10,
-                "order": [[ 1   , "desc" ]]
+                "order": [[ 0   , "desc" ]]
             });
         });
 
