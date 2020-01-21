@@ -286,7 +286,7 @@ def shiftreport():
 
         # get conformance To Plan (CTP) score
         ctp = get_conformance_to_plan(oee_id, good_count)
-        
+
        
         # format lost time
         totalLostMinutes = timedelta(minutes=totalLostMinutes)
