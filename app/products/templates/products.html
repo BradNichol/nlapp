@@ -65,6 +65,7 @@
                                 <div class="form-group">
                                     <label for="cname">Customer Name</label>
                                     <select class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                            <option disabled selected></option>
                                             {% for row in customers %}
                                             <option value="{{row.id}}">{{ row.cname }}</option>
                                             {% endfor %}
@@ -73,6 +74,7 @@
                                 <div class="form-group">
                                     <label for="recipe_id">Recipe</label>
                                     <select class="form-control" id="recipe_id" name="recipe_id" autocomplete="off">
+                                        <option disabled selected></option>
                                         {% for row in recipes %}
                                         <option value="{{row.id}}" >{{ row.rname }}</option>
                                         {% endfor %}
