@@ -87,6 +87,8 @@ def adviceList(adviceTitle):
             <li>Make sure to press update once any changes have been made.</li>
         </ol>
         <strong>Product Notes</strong>
+        <p>A product must first be created in the Product's area for it to be visible here. Product's can 
+        be found via the navigation. </p>
         <p>Once a product has been added for a particular production line, it cannot be added again.
         It can only be added against an another line number. This is to prevent duplication issues.</p>
 
