@@ -3,7 +3,8 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models import User
 from app import db
-from app.utils import db_connect, serialize, send_reset_email
+from app.utils import db_connect, serialize
+from app.users.utils import send_reset_email
 from flask_login import login_user, current_user, logout_user, login_required
 
 users = Blueprint('users', __name__, template_folder='templates')
