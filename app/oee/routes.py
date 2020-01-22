@@ -1,7 +1,8 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint
 from app import db
 from flask_login import login_required, current_user
-from app.utils import db_connect, get_planned_output, get_conformance_to_plan
+from app.utils import db_connect
+from app.oee.utils import get_planned_output, get_conformance_to_plan
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
