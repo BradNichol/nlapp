@@ -44,9 +44,9 @@ def get_planned_output(line_num):
     today_index = date.weekday(date.today())
 
     # get week commencement date
-    wc_date = date.today() - timedelta(days=1)
+    wc_date = date.today() - timedelta(days=today_index)
     
-    # get schedule id using the format date
+    # get schedule id using the wc date date
     sid = Schedule.query.filter(Schedule.wc_date==wc_date).first()
 
     if sid:
