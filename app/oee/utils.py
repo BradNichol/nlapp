@@ -2,7 +2,7 @@ from app.models import User, Schedule, ScheduleDetails, OEEtbl
 from app.utils import db_connect
 from datetime import datetime, date, timedelta
 from sqlalchemy import func
-from flask import request, redirect
+from flask import request, redirect, flash, url_for
 
 
 def add_update_oee_details(oee_id, selectorType, selectTime, units):
@@ -30,7 +30,12 @@ def add_update_oee_details(oee_id, selectorType, selectTime, units):
         
         # check if units produced > ordered units and update orders to 'Completed'
         if selectorType == "Product":
-            update_job_status(oee_id)
+            try:
+                update_job_status(oee_id)
+            except:
+                flash('Job status functionality failed. Speak to administrator.')
+                return redirect(url_for('oee.oeedetails', oee_id=oee_id))
+
 
     con.close()
             
