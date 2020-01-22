@@ -41,6 +41,7 @@ def addOee():
         # get date
         todays_date = date.today()
 
+        # get planned output
         planned_output = get_planned_output(line_num)
         
         # stop new sheet creation if one already exists for that line
