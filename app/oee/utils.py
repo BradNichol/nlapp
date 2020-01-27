@@ -140,3 +140,31 @@ def get_conformance_to_plan(oee_id, good_count):
         ctp = 0
     
     return ctp
+
+
+
+def get_hourly_count(oee_id):
+
+    """ get the hourly column count from OEE_details and count values above 1
+    to know get a count score throughout the day in order to update hourly
+    OEE scores """
+    
+    con = db_connect()
+    cur = con.cursor()
+
+    cur.execute("""SELECT COUNT(DISTINCT _07), COUNT(DISTINCT _08), COUNT(DISTINCT _09), 
+                        COUNT(DISTINCT _10), COUNT(DISTINCT _11), COUNT(DISTINCT _12), 
+                        COUNT(DISTINCT _13), COUNT(DISTINCT _14), COUNT(DISTINCT _15), 
+                        COUNT(DISTINCT _16), COUNT(DISTINCT _17), COUNT(DISTINCT _18), 
+                        COUNT(DISTINCT _19), COUNT(DISTINCT _20), COUNT(DISTINCT _21), 
+                        COUNT(DISTINCT _22) FROM OEE_details where oee_id =:oee_id""", {'oee_id':oee_id})
+
+    
+    hourly_col = cur.fetchall()
+    
+    count = 0
+    for i in hourly_col[0]:
+        if i > 1:
+            count +=1
+    
+    return count

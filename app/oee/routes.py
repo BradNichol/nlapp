@@ -2,7 +2,7 @@ from flask import flash, redirect, render_template, request, url_for, Blueprint
 from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
-from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details
+from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -93,7 +93,7 @@ def oeedetails(oee_id):
 
     oeeInfo = OEEtbl.query.filter(OEEtbl.id==oee_id).first()
     
-    
+
     con = db_connect()
     cur = con.cursor()
     cur.execute("""SELECT *, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS amSum, 
@@ -139,10 +139,14 @@ def oeedetails(oee_id):
             totalRejects = 0
         
         CPM = oeeInfo.speed
-        
+
+
+        # get hourly count
+        hourlyCount = get_hourly_count(oee_id)
+        print(hourlyCount)
 
         # add data into object
-        data = OEEcalc(totalLostMinutes, CPM, totalUnitCount, totalRejects)
+        data = OEEcalc(hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)
@@ -228,8 +232,10 @@ def shiftreport():
         # calc good count
         good_count = totalUnitCount - totalRejects
 
+        hourlyCount = 8
+
         # add data into object
-        data = OEEcalc(totalLostMinutes, CPM, totalUnitCount, totalRejects)
+        data = OEEcalc(hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)

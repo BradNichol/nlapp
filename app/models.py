@@ -200,20 +200,24 @@ class ScheduleDetails (db.Model, UserMixin):
     
 
 class OEEcalc:
-    def __init__(self, totalLostMinutes, CPM, totalUnitCount, totalRejects):
+    def __init__(self, hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects):
         self.shiftLength = 480
+        self.hourLength = 60
+        self.hourlyCount = hourlyCount
+        self.shiftRunTime = self.hourLength * self.hourlyCount
         self.maxCPM = CPM
         self.totalLostMinutes = totalLostMinutes
         self.totalUnitCount = totalUnitCount
         self.totalRejects = totalRejects
-        self.runtime = self.shiftLength - self.totalLostMinutes
+        self.actualRuntime = self.shiftRunTime - self.totalLostMinutes
+    
 
 
     def availability(self):
-        return round(((self.runtime) / self.shiftLength),2)
+        return round(((self.actualRuntime) / self.shiftRunTime),2)
 
     def performance(self):
-        performance = round(((self.totalUnitCount / self.runtime) / self.maxCPM),2)
+        performance = round(((self.totalUnitCount / self.actualRuntime) / self.maxCPM),2)
         if performance <= 0:
             return 0
         else:
@@ -233,10 +237,8 @@ class OEEcalc:
 
     def OEEscore(self):
         score = round((self.availability() * self.performance() * self.quality()),2)
-        if score == 0:
-            return 1
-        else:
-            return score
+    
+        return score
 
 
 
