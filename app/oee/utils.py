@@ -90,9 +90,6 @@ def update_job_status(oee_id):
         return 1
     else:
         return 0
-    
-    
-
 
 
 
