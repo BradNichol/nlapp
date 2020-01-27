@@ -8,7 +8,7 @@ from flask import request, redirect, flash, url_for
 def add_update_oee_details(oee_id, selectorType, selectTime, units):
     """ Function to add / update OEE details and update job status """
 
-    # stop editing after 2 days
+    # stop editing after two days
     start_date = OEEtbl.query.filter_by(id=oee_id).first()
     date_today = date.today()
     delta = date_today - start_date.start_date
