@@ -32,11 +32,12 @@ def addproduct():
 
         # store product data from form 
         product_sku = request.form.get('product_sku')
+        product_name = request.form.get('product_name')
         customer_id = request.form.get('customer_id')
         recipe_id = request.form.get('recipe_id')
         run_rate = request.form.get('run_rate')
 
-        addProduct = Product(product_sku=product_sku, customer_id=customer_id, recipe_id=recipe_id, run_rate=run_rate)
+        addProduct = Product(product_sku=product_sku, product_name=product_name, customer_id=customer_id, recipe_id=recipe_id, run_rate=run_rate)
         db.session.add(addProduct)
         db.session.commit()
 

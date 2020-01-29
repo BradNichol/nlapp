@@ -163,6 +163,7 @@ class Product(db.Model, UserMixin):
     
     id = db.Column(db.Integer, primary_key=True)
     product_sku = db.Column(db.String(40), unique=True, nullable=False)
+    product_name = db.Column(db.String(40), unique=True, nullable=False, default='')
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), unique=False, nullable=False)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), unique=False, nullable=False)
     run_rate = db.Column(db.Integer, unique=False, nullable=False)
