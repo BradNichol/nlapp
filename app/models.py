@@ -65,14 +65,14 @@ class Ingredient(db.Model, UserMixin):
     group = db.Column(db.String(30), unique=False, nullable=False)
     product_code = db.Column(db.String(20), unique=True, nullable=False)
     
-    protein = db.Column(db.Integer, unique=False, nullable=False)
-    carbohydrates = db.Column(db.Integer, unique=False, nullable=False)
-    sugars = db.Column(db.Integer, unique=False, nullable=False)
-    fats = db.Column(db.Integer, unique=False, nullable=False)
-    saturates = db.Column(db.Integer, unique=False, nullable=False)
-    fibre = db.Column(db.Integer, unique=False, nullable=False)
-    salt = db.Column(db.Integer, unique=False, nullable=False)
-    sodium = db.Column(db.Integer, unique=False, nullable=False)
+    protein = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    carbohydrates = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    sugars = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    fats = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    saturates = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    fibre = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    salt = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    sodium = db.Column(db.Integer, unique=False, nullable=False, default=0)
 
 
 
