@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Caramel
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="card-title">Recipe Builder</h5>
+                    </div>
+                    <div class="col">
+                        <span class="float-right"><a href="/recipes/create/toppings/{{ recipe_id }}" class="badge badge-secondary">Skip >> </a></span>
+                    </div>
+                </div>
+            </div>
+            <form action="/recipes/create/caramel/{{ recipe_id }}" method="POST">
+            <input type="hidden" id="ingredient_location" name="ingredient_location" value="caramel"> 
+            <div class="card-body">
+                    <h4>Add Caramel</h4>
+                        <div class="table-responsive"> 
+                        <table class="fTable mt-2" id="recipeTable">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th>Inclusion %</th>
+                                    <th colspan="2">Edit</th>
+                                </tr>
+                            </thead>
+                                <tr>
+                                    <td>
+                                        <input list ="ingredients" id="ingredient_name" name="ingredient_name" class="fTableFormElements" required autocomplete="off">
+                                        <datalist id="ingredients">
+                                                {% for row in ingredients %}
+                                                <option>{{ row.name }}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                    </td>
+                                    <td><input type="number" step="0.01" min="0" max="100" id="ingredient_amount" name="ingredient_amount" class="fTableFormElements"></td>    
+                                    <td><button type="button" class="btn btn-dark btn-sm" style="width:100%" onclick="addRow(this);">  +  </button></td>
+                                    <td><button type="button" class="btn btn-outline-dark btn-sm" style="width:100%" onclick="deleteRow(this);">  -  </button></td>            
+                                </tr>
+                            </table>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                
+                        <button class="btn btn-block btn-primary" type="submit">Save</button>
+            </form>
+            </div>
+        </div>
+</div>
+
+</div>
+    
+</div>
+
+<script>
+function addRow(row)
+{
+    var tr = row.parentNode.parentNode.cloneNode(true);
+    document.getElementById('recipeTable').appendChild(tr);
+    
+}
+
+function deleteRow(row){
+      var d = row.parentNode.parentNode.rowIndex;
+      document.getElementById('recipeTable').deleteRow(d);
+   }
+
+</script>
+
+
+    
+{% endblock %}

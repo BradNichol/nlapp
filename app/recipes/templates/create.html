@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Recipe Builder
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="card-title">Recipe Builder</h5>
+            </div>
+            <form action="/recipes/create" method="POST"> 
+            <div class="card-body">
+                        <h4>Details</h4>
+                            <div class="form-group">
+                                <label for="rname">Recipe Name</label>
+                                <input type="text" name="rname" id="rname" class="form-control" placeholder="PHD/001" required autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="cname">Customer Name</label>
+                                <input type="text" list="customer" class="form-control" id="cname" name="customer_id" required autocomplete="off">
+                                    <datalist id="customer">
+                                        {% for row in customers %}
+                                        <option value="{{row.id}}">{{ row.cname }}</option>
+                                        {% endfor %}
+                                    </datalist>
+                            </div>
+                            <div class="form-group">
+                                <label for="flavour">Flavour Name</label>
+                                <input type="text" name="flavour" id="flavour" class="form-control" placeholder="" required autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="bar_weight">Bar Weight (g)</label>
+                                <input type="number" min="1" max="100" name="bar_weight" id="bar_weight" class="form-control" placeholder="" required>
+                            </div>
+                        
+                </div>                    
+            </div>
+                
+                        <button class="btn btn-block btn-primary" type="submit">Save</button>
+        </div>         
+          
+                
+        </form>
+</div>
+
+    
+
+    
+
+
+    
+{% endblock %}
