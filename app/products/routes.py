@@ -55,6 +55,7 @@ def edit():
         # get id and name for product
         pid = request.form.get('id')
         product_sku = request.form.get('editProductSku')
+        product_name = request.form.get('editProductName')
         customer_id = request.form.get('editCustomerId')
         recipe_id = request.form.get('editRecipeId')
         run_rate = request.form.get('editRunRate')
@@ -63,6 +64,7 @@ def edit():
         # update product
         product = Product.query.filter_by(id=pid).first()
         product.product_sku = product_sku
+        product.product_name = product_name
         product.customer_id = customer_id
         product.recipe_id = recipe_id
         product.run_rate = run_rate
