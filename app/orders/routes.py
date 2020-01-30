@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint, jsonify
 from app import db
 from flask_login import login_required
-from app.models import Orders, Customer, Recipes
+from app.models import Orders, Customer, Recipe
 from app.utils import db_connect, serialize
 from datetime import datetime
 
@@ -14,7 +14,7 @@ def viewOrders():
 
     orders = Orders.query.all()
     customers = Customer.query.all()
-    recipes = Recipes.query.with_entities(Recipes.rname).distinct().filter_by(approved=1)
+    recipes = Recipe.query.with_entities(Recipe.rname).distinct().filter_by(approved=1)
 
     return render_template('orders.html', orders=orders, customers=customers, recipes=recipes)
 
