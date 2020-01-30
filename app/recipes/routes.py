@@ -1,7 +1,8 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint, jsonify
 from app import db
-from app.models import Recipes, Ingredient, Customer
+from app.models import Recipe, Ingredient, Customer
 from app.utils import db_connect, serialize
+from app.recipes.utils import ingredient_name_to_id
 from flask_login import login_required
 
 
@@ -14,20 +15,208 @@ def viewRecipes():
 
     """ View all recipes """
 
-    viewAll = Recipes.query.group_by('rname', 'version_number').all()
+    viewAll = Recipe.query.group_by('rname', 'version_number').all()
     return render_template("recipes.html", recipe=viewAll)
+
 
 
 @recipes.route("/recipes/create", methods=["GET", "POST"])
 @login_required
 def createRecipe():
 
-    """ Create a recipe """
+    """ Step 1 - Create a recipe """
 
-    ingredients = Ingredient.query.with_entities(Ingredient.name, Ingredient.product_code)
+    if request.method == "POST":
+
+        rname = request.form.get('rname')
+        customer_id = request.form.get('customer_id')
+        flavour = request.form.get('flavour')
+        bar_weight = request.form.get('bar_weight')
+        
+
+        new_recipe = Recipe(rname=rname, customer_id=customer_id, flavour=flavour, bar_weight=bar_weight, version_number=1)
+        db.session.add(new_recipe)
+        db.session.commit()
+
+        query = Recipe.query.filter_by(rname=rname).first()
+        id = query.id
+
+        return redirect(url_for('recipes.createMass', recipe_id=id))
+
+
     customers = Customer.query.with_entities(Customer.cname, Customer.id)
+    return render_template('create.html', customers=customers)
+
+
+@recipes.route("/recipes/create/mass/<recipe_id>", methods=["GET", "POST"])
+@login_required
+def createMass(recipe_id):
+
+    """ Step 2 - Create the mass """
+
+    if request.method == "POST":
+
+        recipe_id = recipe_id
+        ingredient_name = request.form.getlist('ingredient_name')
+        ingredient_amount = request.form.getlist('ingredient_amount')
+        ingredient_location = request.form.get('ingredient_location')
+
+        # convert name to id
+        ingredient_id = ingredient_name_to_id(ingredient_name)
+
+
+         # connect and adding multiple ingredients into database
+        con = db_connect()
+        cur = con.cursor()
+
+        sql = """INSERT INTO recipe_details (recipe_id, ingredient_id, ingredient_amount, ingredient_location) VALUES (?, ?, ?/100.0, ?)"""
+        
     
-    return render_template('recipebuilder.html', ingredients=ingredients, customers=customers)
+        query_args = []
+        for ind, ingredient in enumerate(ingredient_id):
+            data = (recipe_id, ingredient, ingredient_amount[ind], ingredient_location)
+            query_args.append(data)
+        
+        
+        cur.executemany(sql, query_args)
+        con.commit()
+        con.close()
+        
+        flash('Mass successfully added')
+        return redirect(url_for('recipes.createCaramel', recipe_id=recipe_id))
+
+
+
+    ingredients = Ingredient.query.all()
+    
+    return render_template('create_mass.html', ingredients=ingredients, recipe_id=recipe_id)
+
+
+@recipes.route("/recipes/create/caramel/<recipe_id>", methods=["GET", "POST"])
+@login_required
+def createCaramel(recipe_id):
+
+    """ Step 3 - Add caramel  """
+
+    if request.method == "POST":
+
+        recipe_id = recipe_id
+        ingredient_name = request.form.getlist('ingredient_name')
+        ingredient_amount = request.form.getlist('ingredient_amount')
+        ingredient_location = request.form.get('ingredient_location')
+
+        # convert name to id
+        ingredient_id = ingredient_name_to_id(ingredient_name)
+
+
+         # connect and adding multiple ingredients into database
+        con = db_connect()
+        cur = con.cursor()
+
+        sql = """INSERT INTO recipe_details (recipe_id, ingredient_id, ingredient_amount, ingredient_location) VALUES (?, ?, ?/100.0, ?)"""
+        
+    
+        query_args = []
+        for ind, ingredient in enumerate(ingredient_id):
+            data = (recipe_id, ingredient, ingredient_amount[ind], ingredient_location)
+            query_args.append(data)
+        
+        
+        cur.executemany(sql, query_args)
+        con.commit()
+        con.close()
+        
+        flash('Caramel successfully added')
+        return redirect(url_for('recipes.createToppings', recipe_id=recipe_id))
+
+    
+    ingredients = Ingredient.query.all()
+    
+    return render_template('create_caramel.html', ingredients=ingredients, recipe_id=recipe_id)
+
+
+@recipes.route("/recipes/create/toppings/<recipe_id>", methods=["GET", "POST"])
+@login_required
+def createToppings(recipe_id):
+
+    """ Step 3 - Add Toppings  """
+
+    if request.method == "POST":
+
+        recipe_id = recipe_id
+        ingredient_name = request.form.getlist('ingredient_name')
+        ingredient_amount = request.form.getlist('ingredient_amount')
+        ingredient_location = request.form.get('ingredient_location')
+
+        # convert name to id
+        ingredient_id = ingredient_name_to_id(ingredient_name)
+
+
+         # connect and adding multiple ingredients into database
+        con = db_connect()
+        cur = con.cursor()
+
+        sql = """INSERT INTO recipe_details (recipe_id, ingredient_id, ingredient_amount, ingredient_location) VALUES (?, ?, ?/100.0, ?)"""
+        
+    
+        query_args = []
+        for ind, ingredient in enumerate(ingredient_id):
+            data = (recipe_id, ingredient, ingredient_amount[ind], ingredient_location)
+            query_args.append(data)
+        
+        
+        cur.executemany(sql, query_args)
+        con.commit()
+        con.close()
+        
+        flash('Toppings successfully added')
+        return redirect(url_for('recipes.createChocolate', recipe_id=recipe_id))
+
+    ingredients = Ingredient.query.all()
+    
+    return render_template('create_toppings.html', ingredients=ingredients, recipe_id=recipe_id)
+
+@recipes.route("/recipes/create/chocolate/<recipe_id>", methods=["GET", "POST"])
+@login_required
+def createChocolate(recipe_id):
+
+    """ Step 4 - Add Chocolate  """
+
+    if request.method == "POST":
+
+        recipe_id = recipe_id
+        ingredient_name = request.form.getlist('ingredient_name')
+        ingredient_amount = request.form.getlist('ingredient_amount')
+        ingredient_location = request.form.get('ingredient_location')
+
+        # convert name to id
+        ingredient_id = ingredient_name_to_id(ingredient_name)
+
+
+         # connect and adding multiple ingredients into database
+        con = db_connect()
+        cur = con.cursor()
+
+        sql = """INSERT INTO recipe_details (recipe_id, ingredient_id, ingredient_amount, ingredient_location) VALUES (?, ?, ?/100.0, ?)"""
+        
+    
+        query_args = []
+        for ind, ingredient in enumerate(ingredient_id):
+            data = (recipe_id, ingredient, ingredient_amount[ind], ingredient_location)
+            query_args.append(data)
+        
+        
+        cur.executemany(sql, query_args)
+        con.commit()
+        con.close()
+        
+        flash('Chocolate added and recipe successfully completed.')
+        return redirect(url_for('recipes.viewRecipes'))
+
+    ingredients = Ingredient.query.all()
+    
+    return render_template('create_chocolate.html', ingredients=ingredients, recipe_id=recipe_id)
+
 
 
 @recipes.route("/recipes/add", methods=["GET", "POST"])
