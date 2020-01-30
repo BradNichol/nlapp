@@ -1,5 +1,5 @@
 from flask import flash, redirect, render_template, request, url_for, Blueprint, jsonify
-from app.models import Product, Customer, Recipes
+from app.models import Product, Customer, Recipe
 from app import db
 from app.utils import db_connect, serialize
 from flask_login import login_required
@@ -15,7 +15,7 @@ def viewproducts():
 
     products = Product.query.all()
     customers = Customer.query.all()
-    recipes = Recipes.query.filter_by(approved=1).all()
+    recipes = Recipe.query.filter_by(approved=1).all()
 
     return render_template("products.html", products=products, customers=customers, recipes=recipes)
 
