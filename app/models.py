@@ -64,7 +64,6 @@ class Ingredient(db.Model, UserMixin):
     name = db.Column(db.String(30), unique=False, nullable=False)
     group = db.Column(db.String(30), unique=False, nullable=False)
     product_code = db.Column(db.String(20), unique=True, nullable=False)
-    
     protein = db.Column(db.Integer, unique=False, nullable=False, default=0)
     carbohydrates = db.Column(db.Integer, unique=False, nullable=False, default=0)
     sugars = db.Column(db.Integer, unique=False, nullable=False, default=0)
@@ -101,30 +100,39 @@ class Customer(db.Model, UserMixin):
     sname = db.Column(db.String(30), unique=False, nullable=True)
     email = db.Column(db.String(50), unique=True, nullable=False)
     
-    recipes = db.relationship('Recipes', backref='customer')
+    recipes = db.relationship('Recipe', backref='customer')
     
     products = db.relationship('Product', backref='customer')
 
 
 
-class Recipes(db.Model, UserMixin):
+class Recipe(db.Model, UserMixin):
 
     __tablename__ = 'recipes'
 
     id = db.Column(db.Integer, primary_key=True)
     rname = db.Column(db.String(30), unique=True, nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), unique=False, nullable=False)
-    ingredient_id = db.Column(db.String(30), db.ForeignKey('Ingredient.product_code'), unique=False, nullable=False)
-    ingredient_amount = db.Column(db.Float, unique=False, nullable=False)
     bar_weight = db.Column(db.Integer, unique=False, nullable=False)
     flavour = db.Column(db.String(30), unique=False, nullable=False)
     version_number = db.Column(db.Integer, unique=False, nullable=False)
-    bar_weight = db.Column(db.Integer, unique=False, nullable=False)
     approved = db.Column(db.Integer, unique=False, nullable=False, default='0')
 
     orders = db.relationship('Orders', backref='recipe')
 
     product = db.relationship('Product', backref='recipe')
+
+class RecipeDetails(db.Model, UserMixin):
+
+    __tablename__ = 'recipe_details'
+
+    id = db.Column(db.Integer, primary_key=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), unique=False, nullable=False)
+    ingredient_id = db.Column(db.String(30), db.ForeignKey('ingredients.id'), unique=False, nullable=False)
+    ingredient_amount = db.Column(db.Float, unique=False, nullable=False)
+    ingredient_location = db.Column(db.String(30), unique=False, nullable=False)
+
+
 
 
 class Orders(db.Model, UserMixin):
