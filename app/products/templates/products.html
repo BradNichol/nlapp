@@ -115,6 +115,10 @@
                             <label for="ingredient">Product (SKU)</label>
                             <input type="text" class="form-control" id="editProductSku" name="editProductSku" autocomplete="off" required>
                         </div>
+                        <div class="form-group">
+                            <label for="product_name">Product Name</label>
+                            <input type="text" class="form-control" id="editProductName" name="editProductName" autocomplete="off" required>
+                        </div>
                             <div class="form-group">
                                 <label for="cname">Customer Name</label>
                                 <select class="form-control" id="editCustomerId" name="editCustomerId" required autocomplete="off">
@@ -162,6 +166,7 @@
                             success:function(data){
                                 $('#id').val(data[0].id);
                                 $('#editProductSku').val(data[0].product_sku);
+                                $('#editProductName').val(data[0].product_name);
                                 $('#editCustomerId').val(data[0].customer_id);
                                 $('#editRecipeId').val(data[0].recipe_id);
                                 $('#editRunRate').val(data[0].run_rate);
