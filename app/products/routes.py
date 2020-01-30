@@ -84,28 +84,3 @@ def edit():
 
         return jsonify(serialize(cur, result))
 
-
-
-@products.route("/ingredients/delete", methods=["POST"])
-@login_required
-def deleteIngredient():
-
-    """ Delete ingredient 
-    
-    Not implemented yet. Need to consider ramifications of 
-    deleting product linked to other areas (i.e. stock, recipes etc)
-    
-    """
-    
-    if request.method == "POST":
-        
-        id = request.form.get('id')
-
-        con = db_connect()
-        cur = con.cursor()
-        cur.execute("DELETE FROM ingredients WHERE id = :id ", {'id': id})
-        con.commit()
-        con.close()
-
-        flash('Ingredient deleted')
-        return redirect(url_for('ingredients.showIngredients'))
