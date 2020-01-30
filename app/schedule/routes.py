@@ -136,7 +136,7 @@ def editscheduledetails():
                 sql = "UPDATE schedule_details SET monday=?, tuesday=?, wednesday=?, thursday=?, friday=?, saturday=?, sunday=? WHERE product_id=? AND schedule_id=? AND line_num=? "
                 cur.execute(sql, (monday[ind], tuesday[ind], wednesday[ind], thursday[ind], friday[ind], saturday[ind], sunday[ind], product_id, schedule_id, line_num[ind]))
                 con.commit()
-            flash('Update successfull.')
+            flash('Update successful.')
             return redirect(url_for('schedule.scheduledetails', format_date=format_date))
         
 
