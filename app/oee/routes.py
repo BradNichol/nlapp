@@ -143,7 +143,7 @@ def oeedetails(oee_id):
 
         # get hourly count
         hourlyCount = get_hourly_count(oee_id)
-        print(hourlyCount)
+        
 
         # add data into object
         data = OEEcalc(hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects)
