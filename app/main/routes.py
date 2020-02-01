@@ -50,7 +50,7 @@ def index():
                     from schedule_details WHERE schedule_id = :schedule_id""", {'schedule_id':schedule_id.id})
     
     weeklyUnitsRequired = cur.fetchone()
-    weeklyUnitsRequired = weeklyUnitsRequired['weeklyUnitsRequired']
+    weeklyUnitsRequired = f'{weeklyUnitsRequired["weeklyUnitsRequired"]:,}'
 
 
     
