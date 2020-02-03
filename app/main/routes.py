@@ -45,8 +45,12 @@ def index():
     
     # get schedule id for displaying number of units required in a week 
     schedule_id = Schedule.query.filter_by(wc_date = firstDateOfWeek).first()
+
+    cur.execute("""SELECT SUM(monday + tuesday + wednesday + thursday + friday + saturday + sunday) as weeklyUnitsRequired 
+                    from schedule_details WHERE schedule_id = :schedule_id""", {'schedule_id':schedule_id.id})
     
-    
+    weeklyUnitsRequired = cur.fetchone()
+    weeklyUnitsRequired = weeklyUnitsRequired['weeklyUnitsRequired']
 
 
     
