@@ -1,7 +1,7 @@
 from app import app, db
 from flask import flash, redirect, render_template, request, session, url_for, Blueprint
 import sqlite3 as sqlite
-from app.models import User
+from app.models import User, Schedule
 from flask_login import current_user, login_required
 from app.utils import db_connect
 from datetime import datetime, date, timedelta
@@ -42,6 +42,10 @@ def index():
         firstDateOfWeek = todaysDate - timedelta(days=5)
     else:
         firstDateOfWeek = todaysDate - timedelta(days=6)
+    
+    # get schedule id for displaying number of units required in a week 
+    schedule_id = Schedule.query.filter_by(wc_date = firstDateOfWeek).first()
+    
 
 
     
