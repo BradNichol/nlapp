@@ -46,6 +46,7 @@ def index():
     # get schedule id for displaying number of units required in a week 
     schedule_id = Schedule.query.filter_by(wc_date = firstDateOfWeek).first()
     
+    
 
 
     
