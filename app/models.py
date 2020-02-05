@@ -220,17 +220,20 @@ class OEEcalc:
         self.totalRejects = totalRejects
         self.actualRuntime = self.shiftRunTime - self.totalLostMinutes
     
-
+        
 
     def availability(self):
         return round(((self.actualRuntime) / self.shiftRunTime),2)
 
     def performance(self):
-        performance = round(((self.totalUnitCount / self.actualRuntime) / self.maxCPM),2)
-        if performance <= 0:
+        try:
+            return round(((self.totalUnitCount / self.actualRuntime) / self.maxCPM),2)
+        except ZeroDivisionError:
             return 0
-        else:
-            return performance
+        # if performance <= 0:
+        #     return 0
+        # else:
+        #     return performance
 
     def quality(self):
         if self.totalRejects == 0:
