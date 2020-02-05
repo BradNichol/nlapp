@@ -230,10 +230,7 @@ class OEEcalc:
             return round(((self.totalUnitCount / self.actualRuntime) / self.maxCPM),2)
         except ZeroDivisionError:
             return 0
-        # if performance <= 0:
-        #     return 0
-        # else:
-        #     return performance
+    
 
     def quality(self):
         if self.totalRejects == 0:
