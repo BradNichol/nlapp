@@ -223,7 +223,10 @@ class OEEcalc:
         
 
     def availability(self):
-        return round(((self.actualRuntime) / self.shiftRunTime),2)
+        try:
+            return round(((self.actualRuntime) / self.shiftRunTime),2)
+        except ZeroDivisionError:
+            return 0
 
     def performance(self):
         try:
