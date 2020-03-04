@@ -293,4 +293,7 @@ def shiftreport():
 
 
 
-
+@oee.route("/oee/reports/shift", methods=["GET", "POST"])
+@login_required
+def productionReport():
+    return redirect('test')
