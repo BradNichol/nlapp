@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    OEE Report
+OEE Report
 {% endblock %}
 
 {% block main %}
@@ -17,7 +17,8 @@
                         <div class="form-group col-9">
                             <select class="form-control" id="shiftSelect" name="shiftSelect">
                                 {% for row in oee_list %}
-                                <option value="{{row.id}}">Date: {{ row.start_date.strftime("%m/%d/%Y") }} Line: {{ row.line_num }}</option>
+                                <option value="{{row.id}}">Date: {{ row.start_date.strftime("%m/%d/%Y") }} Line:
+                                    {{ row.line_num }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -32,7 +33,8 @@
                 <span class="badge badge-pill badge-info">Line: {{  oeeInfo.line_num }}</span>
                 <span class="badge badge-pill badge-info">Line Speed: {{  oeeInfo.speed }}</span>
                 <span class="badge badge-pill badge-dark">Date: {{  oeeInfo.start_date.strftime("%d/%m/%Y") }} </span>
-                <span class="badge badge-pill badge-dark">Operator: {{  oeeInfo.operator.first_name }} {{  oeeInfo.operator.surname }}</span>
+                <span class="badge badge-pill badge-dark">Operator: {{  oeeInfo.operator.first_name }}
+                    {{  oeeInfo.operator.surname }}</span>
             </div>
             {% endif %}
         </div>
@@ -76,16 +78,19 @@
                                 <h5>OEE</h5>
                                 <hr>
                                 <p class="card-text">OEE <span class="float-right">{{ oeeScore }}%</span></p>
-                                <p class="card-text">Availability <span class="float-right">{{ availability }}%</span></p>
+                                <p class="card-text">Availability <span class="float-right">{{ availability }}%</span>
+                                </p>
                                 <p class="card-text">Performance <span class="float-right">{{ performance }}%</span></p>
                                 <p class="card-text">Quality <span class="float-right">{{ quality }}%</span></p>
                             </div>
                             <div class="col-md-4 mt-md-0 mt-3">
                                 <h5>Counts</h5>
                                 <hr>
-                                <p class="card-text">Total Count <span class="float-right">{{ totalUnitCount }}</span></p>
+                                <p class="card-text">Total Count <span class="float-right">{{ totalUnitCount }}</span>
+                                </p>
                                 <p class="card-text">Good Count <span class="float-right">{{ good_count }}</span></p>
-                                <p class="card-text">Reject Count <span class="float-right">{{ totalRejects }}</span></p>
+                                <p class="card-text">Reject Count <span class="float-right">{{ totalRejects }}</span>
+                                </p>
                             </div>
                             <div class="col-md-4 mt-md-0 mt-3">
                                 <h5>Time</h5>
@@ -116,28 +121,28 @@
 
 
         {% endif %}
-        
-            
+
+
     </div>
 
-    
+
 </div>
 
 <script>
     let dtData = {
         labels: [
-                {% for item in labels %}
-                    "{{ item }}",
-                {% endfor %}
+            {% for item in labels %}
+    "{{ item }}",
+        {% endfor %}
                 ],
-        
-        datasets: [{
-            label: '{{legend}}',
-            data: [
-                    {% for item in values %}
-                        {{item}}, 
-                    {% endfor %}],
-            backgroundColor: "rgba(75,192,192,0.4)"
+
+    datasets: [{
+        label: '{{legend}}',
+        data: [
+            {% for item in values %}
+                        {{ item }},
+    {% endfor %}],
+        backgroundColor: "rgba(75,192,192,0.4)"
             
         }]
 
@@ -145,7 +150,7 @@
 
     // get chart canvas
     let ctx = document.getElementById('dtChart').getContext('2d');
-    
+
     // create chart using canvas
     let dtChart = new Chart(ctx, {
         type: 'bar',
@@ -159,10 +164,10 @@
                 }]
             }
         }
-        
+
     });
 </script>
 
 
-    
+
 {% endblock %}
