@@ -143,7 +143,74 @@ def shiftreport():
 
 
 
-@reports.route("/oee/reports/date", methods=["GET", "POST"])
+@reports.route("/reports/production", methods=["GET", "POST"])
 @login_required
 def productionReport():
-    return redirect('test')
+
+    if request.method == "POST":
+
+        from_date = request.form.get('fromDate')
+        to_date = request.form.get('toDate')
+
+        
+        con = db_connect()
+        cur = con.cursor()
+
+        # average daily production count + no. day count 
+        cur.execute("""SELECT AVG(_07+_08+_09+_10+_11+_12+_13+_14) AS avg_am_count,
+                        AVG(_15+_16+_17+_18+_19+_20+_21+_22) AS avg_pm_count,
+                        COUNT(DISTINCT start_date) as day_count
+                        FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
+                        WHERE type = 'Product' AND DATE(start_date) >= '{}' 
+                        AND DATE(start_date) <= '{}'  """.format(from_date, to_date))
+        avg_count_results = cur.fetchall()
+
+        # average daily rejects
+        cur.execute(""" SELECT AVG(_07+_08+_09+_10+_11+_12+_13+_14) AS avg_am_rejects,
+                        AVG(_15+_16+_17+_18+_19+_20+_21+_22) AS avg_pm_rejects FROM 
+                        OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
+                        WHERE type = 'Rejects' AND DATE(start_date) >= '{}' 
+                        AND DATE(start_date) <= '{}'  """.format(from_date, to_date))
+        avg_reject_results = cur.fetchall()
+
+        # average daily downtime 
+        cur.execute("""SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS avg_downtime_am,
+                                SUM(_15+_16+_17+_18+_19+_20+_21+_22) avg_downtime_pm 
+                                FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
+                                WHERE type != 'Product' AND type !='Rejects' 
+                                AND DATE(start_date) >= '{}' 
+                                AND DATE(start_date) <= '{}' """.format(from_date, to_date))
+        avg_downtime_results = cur.fetchall()
+
+        
+    
+        # get total avg daily count across shifts (TypeError catch used if no data present)
+        try:
+            avg_daily_count = avg_count_results[0]['avg_am_count'] + avg_count_results[0]['avg_pm_count']
+        except TypeError:
+            avg_daily_count = 0
+        # get total avg daily rejects across shifts
+        try:
+            avg_daily_rejects = avg_reject_results[0]['avg_am_rejects'] + avg_reject_results[0]['avg_pm_rejects']
+        except TypeError:
+            avg_daily_rejects = 0
+        # get total avg daily downtime
+        try:
+            avg_daily_downtime = (avg_downtime_results[0]['avg_downtime_am'] + avg_downtime_results[0]['avg_downtime_pm']) / avg_count_results[0]['day_count']
+        except TypeError:
+            avg_daily_downtime = 0 
+        
+
+        
+    
+        
+        context = {
+            'avg_daily_good_count' : f'{avg_daily_count-avg_daily_rejects:,}',
+            'avg_daily_rejects' : avg_daily_rejects,
+            'avg_daily_downtime' : timedelta(minutes=avg_daily_downtime)
+        }
+
+
+        return render_template('productionreport.html', **context)
+
+    return render_template('productionreport.html')
