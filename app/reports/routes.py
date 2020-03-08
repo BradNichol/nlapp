@@ -152,6 +152,7 @@ def productionReport():
         from_date = request.form.get('fromDate')
         to_date = request.form.get('toDate')
 
+        line_num = 'IS NOT NULL'
         
         con = db_connect()
         cur = con.cursor()
@@ -162,7 +163,7 @@ def productionReport():
                         COUNT(DISTINCT start_date) as day_count
                         FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                         WHERE type = 'Product' AND DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}'  """.format(from_date, to_date))
+                        AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date  """.format(from_date, to_date, line_num))
         daily_sum_results = cur.fetchall()
 
         # get daily rejects
@@ -170,7 +171,7 @@ def productionReport():
                         SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS sum_pm_rejects FROM 
                         OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                         WHERE type = 'Rejects' AND DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}'  """.format(from_date, to_date))
+                        AND DATE(start_date) <= '{}' AND line_num {}  """.format(from_date, to_date, line_num))
         daily_reject_results = cur.fetchall()
 
         # average daily downtime 
@@ -179,25 +180,24 @@ def productionReport():
                                 FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                                 WHERE type != 'Product' AND type !='Rejects' 
                                 AND DATE(start_date) >= '{}' 
-                                AND DATE(start_date) <= '{}' """.format(from_date, to_date))
+                                AND DATE(start_date) <= '{}' AND line_num {} """.format(from_date, to_date, line_num))
         daily_downtime_results = cur.fetchall()
-
         
     
-        # get total avg daily count across shifts (TypeError catch used if no data present)
+        # get total avg daily count across shifts (except catch used if no data present)
         try:
             avg_daily_count = (daily_sum_results[0]['sum_am_count'] + daily_sum_results[0]['sum_pm_count']) / daily_sum_results[0]['day_count']
-        except TypeError:
+        except:
             avg_daily_count = 0
         # get total avg daily rejects across shifts
         try:
             avg_daily_rejects = (daily_reject_results[0]['sum_am_rejects'] + daily_reject_results[0]['sum_pm_rejects']) / daily_sum_results[0]['day_count']
-        except TypeError:
+        except:
             avg_daily_rejects = 0
         # get total avg daily downtime
         try:
             avg_daily_downtime = (daily_downtime_results[0]['sum_downtime_am'] + daily_downtime_results[0]['sum_downtime_pm']) / daily_sum_results[0]['day_count']
-        except TypeError:
+        except:
             avg_daily_downtime = 0 
         
 
