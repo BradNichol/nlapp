@@ -186,17 +186,17 @@ def productionReport():
     
         # get total avg daily count across shifts (except catch used if no data present)
         try:
-            avg_daily_count = (daily_sum_results[0]['sum_am_count'] + daily_sum_results[0]['sum_pm_count']) / daily_sum_results[0]['day_count']
+            avg_daily_count = sum(sql_to_arr(daily_sum_results)) / len(sql_to_arr(daily_sum_results))
         except:
             avg_daily_count = 0
         # get total avg daily rejects across shifts
         try:
-            avg_daily_rejects = (daily_reject_results[0]['sum_am_rejects'] + daily_reject_results[0]['sum_pm_rejects']) / daily_sum_results[0]['day_count']
+            avg_daily_rejects = sum(sql_to_arr(daily_reject_results)) / len(sql_to_arr(daily_sum_results))
         except:
             avg_daily_rejects = 0
         # get total avg daily downtime
         try:
-            avg_daily_downtime = (daily_downtime_results[0]['sum_downtime_am'] + daily_downtime_results[0]['sum_downtime_pm']) / daily_sum_results[0]['day_count']
+            avg_daily_downtime = sum(sql_to_arr(daily_downtime_results)) / len(sql_to_arr(daily_sum_results))
         except:
             avg_daily_downtime = 0 
 
