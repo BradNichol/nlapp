@@ -17,10 +17,7 @@ def sql_to_arr(from_date, to_date, line_num, unit_type):
                         AND DATE(start_date) <= '{}' AND line_num {} AND type='{}' GROUP BY start_date  """.format(from_date, to_date, line_num, unit_type ))
         results = cur.fetchall()
 
-        arr = []
-        for row in results:        
-            arr.append(row[2] + row[3])
-        return arr
+        return results
 
 # Function to convert SQLite result into an array for downtime data
 # currently sums AM + PM shifts together
