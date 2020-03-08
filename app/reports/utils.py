@@ -2,7 +2,7 @@
 from app.utils import db_connect
 
 
-# Function to convert SQLite result into an array
+# Function to convert SQLite result into an array for Product & Reject data
 # currently sums AM + PM shifts together
 def sql_to_arr(from_date, to_date, line_num, unit_type):
     con = db_connect()
@@ -23,6 +23,8 @@ def sql_to_arr(from_date, to_date, line_num, unit_type):
                 arr.append(row[1] + row[2])
         return arr
 
+# Function to convert SQLite result into an array for downtime data
+# currently sums AM + PM shifts together
 def sql_to_arr2(from_date, to_date, line_num):
     con = db_connect()
     cur = con.cursor()
