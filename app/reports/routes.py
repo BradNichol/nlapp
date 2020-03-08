@@ -4,7 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
 from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
-from app.reports.utils import sql_to_arr
+from app.reports.utils import sql_to_arr, sql_to_arr2
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -156,33 +156,7 @@ def productionReport():
         line_num = 'IS NOT NULL'
         
         con = db_connect()
-        cur = con.cursor()
-
-        # get daily production count + no. day count 
-        cur.execute("""SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_am_count,
-                        SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS sum_pm_count,
-                        COUNT(DISTINCT start_date) as day_count
-                        FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
-                        WHERE type = 'Product' AND DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date  """.format(from_date, to_date, line_num))
-        daily_sum_results = cur.fetchall()
-
-        # get daily rejects
-        cur.execute(""" SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_am_rejects,
-                        SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS sum_pm_rejects FROM 
-                        OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
-                        WHERE type = 'Rejects' AND DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date  """.format(from_date, to_date, line_num))
-        daily_reject_results = cur.fetchall()
-
-        # average daily downtime 
-        cur.execute("""SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
-                                SUM(_15+_16+_17+_18+_19+_20+_21+_22) sum_downtime_pm 
-                                FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
-                                WHERE type != 'Product' AND type !='Rejects' 
-                                AND DATE(start_date) >= '{}' 
-                                AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
-        daily_downtime_results = cur.fetchall()
+        cur = con.cursor()   
 
         # get line speed
         cur. execute("""SELECT SUM(speed) FROM OEE WHERE DATE(start_date) >= '{}' 
@@ -200,12 +174,13 @@ def productionReport():
         chart_data = cur.fetchall()
         
         
-        day_count = len(sql_to_arr(daily_sum_results))
+        day_count = len(sql_to_arr(from_date, to_date, line_num, 'Product'))
         avg_line_speed = line_speed_result[0] / day_count
-        daily_count = sum(sql_to_arr(daily_sum_results))
-        daily_rejects = sum(sql_to_arr(daily_reject_results))
-        daily_downtime = sum(sql_to_arr(daily_downtime_results))
+        daily_count = sum(sql_to_arr(from_date, to_date, line_num, 'Product'))
+        daily_rejects = sum(sql_to_arr(from_date, to_date, line_num, 'Rejects'))
+        daily_downtime = sum(sql_to_arr2(from_date, to_date, line_num))
 
+       
         # add data into object
         data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime, CPM=avg_line_speed, total_unit_count=daily_count, total_rejects=daily_rejects)
         
