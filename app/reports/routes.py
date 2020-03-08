@@ -172,7 +172,7 @@ def productionReport():
                         SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS sum_pm_rejects FROM 
                         OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                         WHERE type = 'Rejects' AND DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}' AND line_num {}  """.format(from_date, to_date, line_num))
+                        AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date  """.format(from_date, to_date, line_num))
         daily_reject_results = cur.fetchall()
 
         # average daily downtime 
@@ -181,7 +181,7 @@ def productionReport():
                                 FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                                 WHERE type != 'Product' AND type !='Rejects' 
                                 AND DATE(start_date) >= '{}' 
-                                AND DATE(start_date) <= '{}' AND line_num {} """.format(from_date, to_date, line_num))
+                                AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
         daily_downtime_results = cur.fetchall()
     
         # get total avg daily count across shifts (except catch used if no data present)
@@ -199,7 +199,7 @@ def productionReport():
             avg_daily_downtime = (daily_downtime_results[0]['sum_downtime_am'] + daily_downtime_results[0]['sum_downtime_pm']) / daily_sum_results[0]['day_count']
         except:
             avg_daily_downtime = 0 
-             
+
         
         context = {
             'avg_daily_good_count' : f'{avg_daily_count-avg_daily_rejects:,}',
