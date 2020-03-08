@@ -4,6 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
 from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
+from app.reports.utils import sql_to_arr
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -182,7 +183,6 @@ def productionReport():
                                 AND DATE(start_date) >= '{}' 
                                 AND DATE(start_date) <= '{}' AND line_num {} """.format(from_date, to_date, line_num))
         daily_downtime_results = cur.fetchall()
-        
     
         # get total avg daily count across shifts (except catch used if no data present)
         try:
@@ -199,10 +199,7 @@ def productionReport():
             avg_daily_downtime = (daily_downtime_results[0]['sum_downtime_am'] + daily_downtime_results[0]['sum_downtime_pm']) / daily_sum_results[0]['day_count']
         except:
             avg_daily_downtime = 0 
-        
-
-        
-    
+             
         
         context = {
             'avg_daily_good_count' : f'{avg_daily_count-avg_daily_rejects:,}',
