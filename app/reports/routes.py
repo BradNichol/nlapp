@@ -184,27 +184,17 @@ def productionReport():
                                 AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
         daily_downtime_results = cur.fetchall()
     
-        # get total avg daily count across shifts (except catch used if no data present)
-        try:
-            avg_daily_count = sum(sql_to_arr(daily_sum_results)) / len(sql_to_arr(daily_sum_results))
-        except:
-            avg_daily_count = 0
-        # get total avg daily rejects across shifts
-        try:
-            avg_daily_rejects = sum(sql_to_arr(daily_reject_results)) / len(sql_to_arr(daily_sum_results))
-        except:
-            avg_daily_rejects = 0
-        # get total avg daily downtime
-        try:
-            avg_daily_downtime = sum(sql_to_arr(daily_downtime_results)) / len(sql_to_arr(daily_sum_results))
-        except:
-            avg_daily_downtime = 0 
+        
+        day_count = len(sql_to_arr(daily_sum_results))
+        daily_count = sum(sql_to_arr(daily_sum_results))
+        daily_rejects = sum(sql_to_arr(daily_reject_results))
+        daily_downtime = sum(sql_to_arr(daily_downtime_results))
 
         
         context = {
-            'avg_daily_good_count' : f'{avg_daily_count-avg_daily_rejects:,}',
-            'avg_daily_rejects' : avg_daily_rejects,
-            'avg_daily_downtime' : timedelta(minutes=avg_daily_downtime)
+            'avg_daily_good_count' : f'{(daily_count-daily_rejects) / day_count:,}',
+            'avg_daily_rejects' : daily_rejects / day_count,
+            'avg_daily_downtime' : timedelta(minutes=daily_downtime / day_count)
         }
 
 
