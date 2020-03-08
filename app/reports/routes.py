@@ -194,7 +194,11 @@ def productionReport():
         context = {
             'avg_daily_good_count' : f'{(daily_count-daily_rejects) / day_count:,}',
             'avg_daily_rejects' : daily_rejects / day_count,
-            'avg_daily_downtime' : timedelta(minutes=daily_downtime / day_count)
+            'avg_daily_downtime' : timedelta(minutes=daily_downtime / day_count),
+            'total_count' : f'{daily_count:,}',
+            'total_good_count' : f'{daily_count - daily_rejects:,}',
+            'total_rejects' : f'{daily_rejects:,}'
+            
         }
 
 
