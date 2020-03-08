@@ -183,15 +183,22 @@ def productionReport():
                                 AND DATE(start_date) >= '{}' 
                                 AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
         daily_downtime_results = cur.fetchall()
-    
+
+        # get line speed
+        cur. execute("""SELECT SUM(speed) FROM OEE WHERE DATE(start_date) >= '{}' 
+                        AND DATE(start_date) <= '{}' AND line_num {} 
+                        """.format(from_date, to_date, line_num))
+        line_speed_result = cur.fetchone()
+        
         
         day_count = len(sql_to_arr(daily_sum_results))
+        avg_line_speed = line_speed_result[0] / day_count
         daily_count = sum(sql_to_arr(daily_sum_results))
         daily_rejects = sum(sql_to_arr(daily_reject_results))
         daily_downtime = sum(sql_to_arr(daily_downtime_results))
 
         # add data into object
-        data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime, CPM=50, total_unit_count=daily_count, total_rejects=daily_rejects)
+        data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime, CPM=avg_line_speed, total_unit_count=daily_count, total_rejects=daily_rejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)
