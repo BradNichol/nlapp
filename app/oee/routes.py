@@ -129,24 +129,24 @@ def oeedetails(oee_id):
     if downtimeStats[0]['amShift'] or downtimeStats[0]['pmShift']:
 
         # calc total lost minutes
-        totalLostMinutes = downtimeStats[0]['amShift'] + downtimeStats[0]['pmShift']
+        total_lost_minutes = downtimeStats[0]['amShift'] + downtimeStats[0]['pmShift']
         # calc total units produced
-        totalUnitCount = oeeStats[0]['amSum'] + oeeStats[0]['pmSum']
+        total_unit_count = oeeStats[0]['amSum'] + oeeStats[0]['pmSum']
         # calc total rejected products
         if rejectStats[0]['amRejects']:
-            totalRejects = rejectStats[0]['amRejects'] + rejectStats[0]['pmRejects']
+            total_rejects = rejectStats[0]['amRejects'] + rejectStats[0]['pmRejects']
         else:
-            totalRejects = 0
+            total_rejects = 0
         
         CPM = oeeInfo.speed
 
 
         # get hourly count
-        hourlyCount = get_hourly_count(oee_id)
+        hourly_count = get_hourly_count(oee_id)
         
 
         # add data into object
-        data = OEEcalc(hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects)
+        data = OEEcalc(hourly_count, total_lost_minutes, CPM, total_unit_count, total_rejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)

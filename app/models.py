@@ -209,38 +209,38 @@ class ScheduleDetails (db.Model, UserMixin):
     
 
 class OEEcalc:
-    def __init__(self, hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects):
-        self.shiftLength = 480
-        self.hourLength = 60
-        self.hourlyCount = hourlyCount
-        self.shiftRunTime = self.hourLength * self.hourlyCount
-        self.maxCPM = CPM
-        self.totalLostMinutes = totalLostMinutes
-        self.totalUnitCount = totalUnitCount
-        self.totalRejects = totalRejects
-        self.actualRuntime = self.shiftRunTime - self.totalLostMinutes
+    def __init__(self, hourly_count, total_lost_minutes, CPM, total_unit_count, total_rejects):
+        self.shift_length = 480
+        self.hour_length = 60
+        self.hourly_count = hourly_count
+        self.shift_run_time = self.hour_length * self.hourly_count
+        self.max_cpm = CPM
+        self.total_lost_minutes = total_lost_minutes
+        self.total_unit_count = total_unit_count
+        self.total_rejects = total_rejects
+        self.actual_run_time = self.shift_run_time - self.total_lost_minutes
     
         
 
     def availability(self):
         try:
-            return round(((self.actualRuntime) / self.shiftRunTime),2)
+            return round(((self.actual_run_time) / self.shift_run_time),2)
         except ZeroDivisionError:
             return 0
 
     def performance(self):
         try:
-            return round(((self.totalUnitCount / self.actualRuntime) / self.maxCPM),2)
+            return round(((self.total_unit_count / self.actual_run_time) / self.max_cpm),2)
         except ZeroDivisionError:
             return 0
     
 
     def quality(self):
-        if self.totalRejects == 0:
+        if self.total_rejects == 0:
             return 1
         else:
             try:
-                return round(((self.totalUnitCount - self.totalRejects) / self.totalUnitCount),2)
+                return round(((self.total_unit_count - self.total_rejects) / self.total_unit_count),2)
             except ZeroDivisionError:
                 return 0
 
