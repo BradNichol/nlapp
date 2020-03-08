@@ -19,8 +19,7 @@ def sql_to_arr(from_date, to_date, line_num, unit_type):
 
         arr = []
         for row in results:        
-            if row[1] == unit_type:
-                arr.append(row[2] + row[3])
+            arr.append(row[2] + row[3])
         return arr
 
 # Function to convert SQLite result into an array for downtime data
