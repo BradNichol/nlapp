@@ -186,12 +186,12 @@ def productionReport():
     
         # get total avg daily count across shifts (TypeError catch used if no data present)
         try:
-            avg_daily_count = daily_sum_results[0]['sum_am_count'] + daily_sum_results[0]['sum_pm_count']
+            avg_daily_count = (daily_sum_results[0]['sum_am_count'] + daily_sum_results[0]['sum_pm_count']) / daily_sum_results[0]['day_count']
         except TypeError:
             avg_daily_count = 0
         # get total avg daily rejects across shifts
         try:
-            avg_daily_rejects = daily_reject_results[0]['sum_am_rejects'] + daily_reject_results[0]['sum_pm_rejects']
+            avg_daily_rejects = (daily_reject_results[0]['sum_am_rejects'] + daily_reject_results[0]['sum_pm_rejects']) / daily_sum_results[0]['day_count']
         except TypeError:
             avg_daily_rejects = 0
         # get total avg daily downtime
