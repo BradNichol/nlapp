@@ -103,7 +103,7 @@ Production Report
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <h5>Downtime</h5>
+                                <h5>Total Downtime</h5>
                                 <hr>
                                 <canvas id="dtChart" width="100%" height="50"></canvas>
                             </div>
@@ -125,15 +125,15 @@ Production Report
 <script>
     let dtData = {
         labels: [
-            {% for item in labels %}
+            {% for item in dt_labels %}
     "{{ item }}",
         {% endfor %}
                 ],
 
     datasets: [{
-        label: '{{legend}}',
+        label: '{{dt_legend}}',
         data: [
-            {% for item in values %}
+            {% for item in dt_values %}
                         {{ item }},
     {% endfor %}],
         backgroundColor: "rgba(75,192,192,0.4)"
