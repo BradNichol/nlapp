@@ -189,6 +189,15 @@ def productionReport():
                         AND DATE(start_date) <= '{}' AND line_num {} 
                         """.format(from_date, to_date, line_num))
         line_speed_result = cur.fetchone()
+
+        # downtime data for chart 
+        cur.execute("""SELECT type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
+                                SUM(_15+_16+_17+_18+_19+_20+_21+_22) sum_downtime_pm 
+                                FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
+                                WHERE type != 'Product' AND type !='Rejects' 
+                                AND DATE(start_date) >= '{}' 
+                                AND DATE(start_date) <= '{}' AND line_num {} GROUP BY type """.format(from_date, to_date, line_num))
+        chart_data = cur.fetchall()
         
         
         day_count = len(sql_to_arr(daily_sum_results))
@@ -206,6 +215,21 @@ def productionReport():
         quality = round((data.quality()*100),2)
         oee_score = round((data.OEEscore()*100),2)
 
+
+        ##################################
+        #
+        #          Chart Data 
+        #
+        ##################################
+        
+        # Downtime Chart (dt)
+        dt_legend = 'Downtime Data (Minutes)'
+
+        dt_labels = [i[0] for i in chart_data]
+        dt_values = [i[1] + i[2] for i in chart_data]
+
+        ######################################
+
         
         context = {
             'avg_daily_good_count' : f'{(daily_count-daily_rejects) / day_count:,}',
@@ -217,7 +241,10 @@ def productionReport():
             'oee_score' : oee_score,
             'availability' : availability,
             'performance' : performance,
-            'quality' : quality
+            'quality' : quality,
+            'dt_legend' : dt_legend,
+            'dt_labels' : dt_labels,
+            'dt_values' : dt_values
             
         }
 
