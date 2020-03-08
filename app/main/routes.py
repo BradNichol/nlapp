@@ -18,8 +18,6 @@ def index():
     
     cur.execute("SELECT COUNT(cname) FROM customers")
     result1 = cur.fetchone()[0]
-    cur.execute("SELECT COUNT(order_id) FROM orders")
-    result2 = cur.fetchone()[0]
     cur.execute("SELECT COUNT(id) FROM recipes GROUP BY rname")
     result3 = cur.fetchone()[0]
 
