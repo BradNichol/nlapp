@@ -190,6 +190,15 @@ def productionReport():
         daily_rejects = sum(sql_to_arr(daily_reject_results))
         daily_downtime = sum(sql_to_arr(daily_downtime_results))
 
+        # add data into object
+        data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime, CPM=50, total_unit_count=daily_count, total_rejects=daily_rejects)
+        
+        # return OEE scores
+        availability = round((data.availability()*100),2)
+        performance = round((data.performance()*100),2)
+        quality = round((data.quality()*100),2)
+        oee_score = round((data.OEEscore()*100),2)
+
         
         context = {
             'avg_daily_good_count' : f'{(daily_count-daily_rejects) / day_count:,}',
@@ -197,7 +206,8 @@ def productionReport():
             'avg_daily_downtime' : timedelta(minutes=daily_downtime / day_count),
             'total_count' : f'{daily_count:,}',
             'total_good_count' : f'{daily_count - daily_rejects:,}',
-            'total_rejects' : f'{daily_rejects:,}'
+            'total_rejects' : f'{daily_rejects:,}',
+            'oee_score' : oee_score
             
         }
 
