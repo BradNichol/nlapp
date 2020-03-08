@@ -28,24 +28,24 @@ OEE Report
                     </div>
                 </form>
             </div>
-            {% if oeeScore %}
+            {% if oee_score %}
             <div class="col justify-content-end">
-                <span class="badge badge-pill badge-info">Line: {{  oeeInfo.line_num }}</span>
-                <span class="badge badge-pill badge-info">Line Speed: {{  oeeInfo.speed }}</span>
-                <span class="badge badge-pill badge-dark">Date: {{  oeeInfo.start_date.strftime("%d/%m/%Y") }} </span>
-                <span class="badge badge-pill badge-dark">Operator: {{  oeeInfo.operator.first_name }}
-                    {{  oeeInfo.operator.surname }}</span>
+                <span class="badge badge-pill badge-info">Line: {{  oee_info.line_num }}</span>
+                <span class="badge badge-pill badge-info">Line Speed: {{  oee_info.speed }}</span>
+                <span class="badge badge-pill badge-dark">Date: {{  oee_info.start_date.strftime("%d/%m/%Y") }} </span>
+                <span class="badge badge-pill badge-dark">Operator: {{  oee_info.operator.first_name }}
+                    {{  oee_info.operator.surname }}</span>
             </div>
             {% endif %}
         </div>
-        {% if oeeScore %}
+        {% if oee_score %}
         <div class="row mt-4">
             <div class="col">
                 <div class="card-deck">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">OEE</h5>
-                            <p class="card-text display-4">{{ oeeScore }}%</p>
+                            <p class="card-text display-4">{{ oee_score }}%</p>
                         </div>
                     </div>
                     <div class="card">
@@ -57,7 +57,7 @@ OEE Report
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Downtime</h5>
-                            <p class="card-text display-4">{{ totalLostMinutes}}</p>
+                            <p class="card-text display-4">{{ total_lost_minutes}}</p>
                         </div>
                     </div>
                     <div class="card">
@@ -77,7 +77,7 @@ OEE Report
                             <div class="col-md-4">
                                 <h5>OEE</h5>
                                 <hr>
-                                <p class="card-text">OEE <span class="float-right">{{ oeeScore }}%</span></p>
+                                <p class="card-text">OEE <span class="float-right">{{ oee_score }}%</span></p>
                                 <p class="card-text">Availability <span class="float-right">{{ availability }}%</span>
                                 </p>
                                 <p class="card-text">Performance <span class="float-right">{{ performance }}%</span></p>
@@ -86,17 +86,17 @@ OEE Report
                             <div class="col-md-4 mt-md-0 mt-3">
                                 <h5>Counts</h5>
                                 <hr>
-                                <p class="card-text">Total Count <span class="float-right">{{ totalUnitCount }}</span>
+                                <p class="card-text">Total Count <span class="float-right">{{ total_unit_count }}</span>
                                 </p>
                                 <p class="card-text">Good Count <span class="float-right">{{ good_count }}</span></p>
-                                <p class="card-text">Reject Count <span class="float-right">{{ totalRejects }}</span>
+                                <p class="card-text">Reject Count <span class="float-right">{{ total_rejects }}</span>
                                 </p>
                             </div>
                             <div class="col-md-4 mt-md-0 mt-3">
                                 <h5>Time</h5>
                                 <hr>
-                                <p class="card-text">All Time <span class="float-right">{{ shiftLength }}</span></p>
-                                <p class="card-text">Run Time <span class="float-right">{{ runtime }}</span></p>
+                                <p class="card-text">All Time <span class="float-right">{{ shift_length }}</span></p>
+                                <p class="card-text">Run Time <span class="float-right">{{ run_time }}</span></p>
                             </div>
                         </div>
                     </div>

@@ -30,7 +30,7 @@ def shiftreport():
         cur.execute("""SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS amShift,
                                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS pmShift FROM 
                                     OEE_details WHERE type = 'Product' AND oee_id = :oee_id  """, {'oee_id':oee_id})
-        unitCount = cur.fetchall()
+        unit_count = cur.fetchall()
         
 
         # overall shift details
@@ -38,13 +38,13 @@ def shiftreport():
                                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS pmSum 
                                     FROM OEE_details WHERE oee_id = :oee_id GROUP BY type
                                     ORDER BY (CASE type WHEN 'Product' THEN 1 END) DESC""", {'oee_id':oee_id})
-        oeeStats = cur.fetchall()
+        oee_stats = cur.fetchall()
 
         # rejects
         cur.execute(""" SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS amRejects,
                                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS pmRejects FROM 
                                     OEE_details WHERE type = 'Rejects' AND oee_id = :oee_id  """, {'oee_id':oee_id})
-        rejectStats = cur.fetchall()
+        reject_stats = cur.fetchall()
 
         # downtime stats
         cur.execute("""SELECT *, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS amShift,
@@ -67,51 +67,51 @@ def shiftreport():
 
         # calc total lost minutes
         try:
-            totalLostMinutes = downtimeStats[0]['amShift'] + downtimeStats[0]['pmShift']
+            total_lost_minutes = downtimeStats[0]['amShift'] + downtimeStats[0]['pmShift']
         except TypeError:
-            totalLostMinutes = 0
+            total_lost_minutes = 0
         # calc total units produced
         try:
-            totalUnitCount = unitCount[0]['amShift'] + unitCount[0]['pmShift']
+            total_unit_count = unit_count[0]['amShift'] + unit_count[0]['pmShift']
         except TypeError:
-            totalUnitCount = 0
+            total_unit_count = 0
         # calc total rejected products
         try:
-            totalRejects = rejectStats[0]['amRejects'] + rejectStats[0]['pmRejects']
+            total_rejects = reject_stats[0]['amRejects'] + reject_stats[0]['pmRejects']
         except TypeError:
-            totalRejects = 0
+            total_rejects = 0
         # calc good count
-        good_count = totalUnitCount - totalRejects
+        good_count = total_unit_count - total_rejects
 
-        hourlyCount = 8
+        hourly_count = 8
 
         # add data into object
-        data = OEEcalc(hourlyCount, totalLostMinutes, CPM, totalUnitCount, totalRejects)
+        data = OEEcalc(hourly_count, total_lost_minutes, CPM, total_unit_count, total_rejects)
         
         # return OEE scores
         availability = round((data.availability()*100),2)
         performance = round((data.performance()*100),2)
         quality = round((data.quality()*100),2)
-        oeeScore = round((data.OEEscore()*100),2)
+        oee_score = round((data.OEEscore()*100),2)
 
         # get conformance To Plan (CTP) score
         ctp = get_conformance_to_plan(oee_id, good_count)
 
        
         # format lost time
-        totalLostMinutes = timedelta(minutes=totalLostMinutes)
+        total_lost_minutes = timedelta(minutes=total_lost_minutes)
 
         # format shift length
-        shiftLength = timedelta(minutes=data.shiftLength)
+        shift_length = timedelta(minutes=data.shift_length)
 
         # format good count
         good_count = f'{good_count:,}'
 
         # format total unit count
-        totalUnitCount = f'{totalUnitCount:,}'
+        total_unit_count = f'{total_unit_count:,}'
 
         # calc run time
-        runtime = shiftLength - totalLostMinutes
+        run_time = shift_length - total_lost_minutes
 
         """ Chart Data """
         
@@ -127,14 +127,14 @@ def shiftreport():
         
         
         
-        oeeInfo = OEEtbl.query.filter_by(id = oee_id).first()
+        oee_info = OEEtbl.query.filter_by(id = oee_id).first()
 
         oee_list = OEEtbl.query.order_by(desc(OEEtbl.start_date)).limit(20).all()
 
-        return render_template('shiftreport.html', good_count=good_count, oee_list=oee_list, oeeStats=oeeStats, 
-                                availability=availability, performance=performance, quality=quality, oeeScore=oeeScore, 
-                                totalLostMinutes=totalLostMinutes, totalUnitCount=totalUnitCount, totalRejects=totalRejects, 
-                                shiftLength=shiftLength, runtime=runtime, legend=legend, labels=labels, values=values, oeeInfo=oeeInfo, ctp=ctp)
+        return render_template('shiftreport.html', good_count=good_count, oee_list=oee_list, oee_stats=oee_stats, 
+                                availability=availability, performance=performance, quality=quality, oee_score=oee_score, 
+                                total_lost_minutes=total_lost_minutes, total_unit_count=total_unit_count, total_rejects=total_rejects, 
+                                shift_length=shift_length, run_time=run_time, legend=legend, labels=labels, values=values, oee_info=oee_info, ctp=ctp)
 
 
     oee_list = OEEtbl.query.order_by(desc(OEEtbl.start_date)).limit(20).all()
