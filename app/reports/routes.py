@@ -4,7 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
 from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
-from app.reports.utils import get_product_count, get_downtime_minutes
+from app.reports.utils import get_product_count, get_downtime_minutes, testfunc
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -163,17 +163,24 @@ def productionReport():
                         AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date
                         """.format(from_date, to_date, line_num))
         line_speed_result = cur.fetchall()
-        line_speed_arr = [i[0] for i in line_speed_result]
         
+        
+        # Data arrays
+        line_speed_arr = [i[0] for i in line_speed_result]
+        daily_unit_count = [i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')]
+        daily_reject_count = [i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Rejects')]
+        daily_downtime_count = [i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'start_date')]
+
+        # sum values of data arrays
         day_count = len(get_product_count(from_date, to_date, line_num, 'Product'))
         avg_line_speed = sum(line_speed_arr) / day_count
-        daily_count = sum([i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')])
-        daily_rejects = sum(get_product_count(from_date, to_date, line_num, 'Rejects'))
-        daily_downtime = sum([i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'start_date')])
+        daily_unit_sum = sum(daily_unit_count)
+        daily_rejects_sum = sum(daily_reject_count)
+        daily_downtime_sum = sum(daily_downtime_count)
 
        
         # add data into object
-        data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime, CPM=avg_line_speed, total_unit_count=daily_count, total_rejects=daily_rejects)
+        data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime_sum, CPM=avg_line_speed, total_unit_count=daily_unit_sum, total_rejects=daily_rejects_sum)
         
         # return OEE scores
         availability = round((data.availability()*100),2)
@@ -207,13 +214,13 @@ def productionReport():
         data = {
             'from_date': from_date,
             'to_date' : to_date,
-            'avg_daily_good_count' : f'{round((daily_count-daily_rejects) / day_count):,}',
-            'avg_daily_rejects' : daily_rejects / day_count,
-            'avg_daily_downtime' : timedelta(minutes=round(daily_downtime / day_count)),
-            'total_count' : f'{daily_count:,}',
-            'total_good_count' : f'{daily_count - daily_rejects:,}',
-            'total_rejects' : f'{daily_rejects:,}',
-            'total_downtime' : timedelta(minutes=round(daily_downtime)),
+            'avg_daily_good_count' : f'{round((daily_unit_sum-daily_rejects_sum) / day_count):,}',
+            'avg_daily_rejects' : daily_rejects_sum / day_count,
+            'avg_daily_downtime' : timedelta(minutes=round(daily_downtime_sum / day_count)),
+            'total_count' : f'{daily_unit_sum:,}',
+            'total_good_count' : f'{daily_unit_sum - daily_rejects_sum:,}',
+            'total_rejects' : f'{daily_rejects_sum:,}',
+            'total_downtime' : timedelta(minutes=round(daily_downtime_sum)),
             'oee_score' : oee_score,
             'availability' : availability,
             'performance' : performance,
