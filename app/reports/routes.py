@@ -242,7 +242,10 @@ def productionReport():
             'dp_values' : dp_values,
             'oee_legend' : oee_legend,
             'oee_labels' : oee_labels,
-            'oee_values' : oee_values
+            'oee_p' : oee_values[0],
+            'oee_a' : oee_values[1],
+            'oee_q' : oee_values[2],
+            'oee_o' : oee_values[3]
             
         }
 
