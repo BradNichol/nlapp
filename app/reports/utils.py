@@ -8,7 +8,6 @@ def get_product_count(from_date, to_date, line_num, unit_type):
     cur = con.cursor()
 
     if unit_type == 'Product' or 'Rejects':
-       
         cur.execute("""SELECT start_date, type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_am_count,
                         SUM(_15+_16+_17+_18+_19+_20+_21+_22) AS sum_pm_count
                         FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
