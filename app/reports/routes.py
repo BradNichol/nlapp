@@ -4,7 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
 from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
-from app.reports.utils import get_product_count, get_downtime_minutes, testfunc
+from app.reports.utils import get_product_count, get_downtime_minutes, oee_to_dict
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -178,7 +178,7 @@ def productionReport():
         daily_rejects_sum = sum(daily_reject_count)
         daily_downtime_sum = sum(daily_downtime_count)
 
-       
+    
         # add data into object
         data = OEEcalc(hourly_count=(day_count*8), total_lost_minutes=daily_downtime_sum, CPM=avg_line_speed, total_unit_count=daily_unit_sum, total_rejects=daily_rejects_sum)
         
@@ -194,18 +194,27 @@ def productionReport():
         #          Chart Data 
         #
         ##################################
-        
+        # dates in array
+        dates = [i[0] for i in get_product_count(from_date, to_date, line_num, 'Product')]
+
         # Downtime Chart (dt)
         dt_legend = 'Downtime Data (Minutes)'
-
         dt_labels = [i[0] for i in get_downtime_minutes(from_date, to_date, line_num, 'type')]
         dt_values = [i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'type')]
 
         # Daily production count (dp)
         dp_legend = 'Daily Production Count'
-
-        dp_labels = [i[0] for i in get_product_count(from_date, to_date, line_num, 'Product')]
+        dp_labels = dates
         dp_values = [i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')]
+        
+        # Daily PAQ-OEE chart (oee)
+        oee_dict = oee_to_dict(daily_downtime_count, line_speed_arr, daily_unit_count, daily_reject_count)
+        
+        oee_legend = 'PAQ-OEE Chart'
+        oee_labels = dates
+        oee_values = [oee_dict['performance'], oee_dict['availability'], oee_dict['quality'], oee_dict['OEE']]
+
+        
         
 
         ######################################
@@ -230,7 +239,10 @@ def productionReport():
             'dt_values' : dt_values,
             'dp_legend' : dp_legend,
             'dp_labels' : dp_labels,
-            'dp_values' : dp_values
+            'dp_values' : dp_values,
+            'oee_legend' : oee_legend,
+            'oee_labels' : oee_labels,
+            'oee_values' : oee_values
             
         }
 
