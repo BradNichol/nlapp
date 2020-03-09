@@ -163,22 +163,13 @@ def productionReport():
                         AND DATE(start_date) <= '{}' AND line_num {} 
                         """.format(from_date, to_date, line_num))
         line_speed_result = cur.fetchone()
-
-        # downtime data for chart 
-        cur.execute("""SELECT type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
-                                SUM(_15+_16+_17+_18+_19+_20+_21+_22) sum_downtime_pm 
-                                FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
-                                WHERE type != 'Product' AND type !='Rejects' 
-                                AND DATE(start_date) >= '{}' 
-                                AND DATE(start_date) <= '{}' AND line_num {} GROUP BY type """.format(from_date, to_date, line_num))
-        chart_data = cur.fetchall()
         
         
         day_count = len(sql_to_arr(from_date, to_date, line_num, 'Product'))
         avg_line_speed = line_speed_result[0] / day_count
-        daily_count = sum(sql_to_arr(from_date, to_date, line_num, 'Product'))
+        daily_count = sum([i[2] + i[3] for i in sql_to_arr(from_date, to_date, line_num, 'Product')])
         daily_rejects = sum(sql_to_arr(from_date, to_date, line_num, 'Rejects'))
-        daily_downtime = sum(sql_to_arr2(from_date, to_date, line_num))
+        daily_downtime = sum([i[1] + i[2] for i in sql_to_arr2(from_date, to_date, line_num, 'start_date')])
 
        
         # add data into object
@@ -200,8 +191,15 @@ def productionReport():
         # Downtime Chart (dt)
         dt_legend = 'Downtime Data (Minutes)'
 
-        dt_labels = [i[0] for i in chart_data]
-        dt_values = [i[1] + i[2] for i in chart_data]
+        dt_labels = [i[0] for i in sql_to_arr2(from_date, to_date, line_num, 'type')]
+        dt_values = [i[1] + i[2] for i in sql_to_arr2(from_date, to_date, line_num, 'type')]
+
+        # Daily production count (dp)
+        dp_legend = 'Daily Production Count'
+
+        dp_labels = [i[0] for i in sql_to_arr(from_date, to_date, line_num, 'Product')]
+        dp_values = [i[2] + i[3] for i in sql_to_arr(from_date, to_date, line_num, 'Product')]
+        
 
         ######################################
 
@@ -219,7 +217,10 @@ def productionReport():
             'quality' : quality,
             'dt_legend' : dt_legend,
             'dt_labels' : dt_labels,
-            'dt_values' : dt_values
+            'dt_values' : dt_values,
+            'dp_legend' : dp_legend,
+            'dp_labels' : dp_labels,
+            'dp_values' : dp_values
             
         }
 
