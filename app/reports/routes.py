@@ -159,14 +159,14 @@ def productionReport():
         cur = con.cursor()   
 
         # get line speed
-        cur. execute("""SELECT SUM(speed) FROM OEE WHERE DATE(start_date) >= '{}' 
-                        AND DATE(start_date) <= '{}' AND line_num {} 
+        cur. execute("""SELECT speed FROM OEE WHERE DATE(start_date) >= '{}' 
+                        AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date
                         """.format(from_date, to_date, line_num))
-        line_speed_result = cur.fetchone()
-        
+        line_speed_result = cur.fetchall()
+        line_speed_arr = [i[0] for i in line_speed_result]
         
         day_count = len(get_product_count(from_date, to_date, line_num, 'Product'))
-        avg_line_speed = line_speed_result[0] / day_count
+        avg_line_speed = sum(line_speed_arr) / day_count
         daily_count = sum([i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')])
         daily_rejects = sum(get_product_count(from_date, to_date, line_num, 'Rejects'))
         daily_downtime = sum([i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'start_date')])
