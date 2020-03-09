@@ -211,6 +211,7 @@ def productionReport():
             'total_count' : f'{daily_count:,}',
             'total_good_count' : f'{daily_count - daily_rejects:,}',
             'total_rejects' : f'{daily_rejects:,}',
+            'total_downtime' : timedelta(minutes=round(daily_downtime)),
             'oee_score' : oee_score,
             'availability' : availability,
             'performance' : performance,
