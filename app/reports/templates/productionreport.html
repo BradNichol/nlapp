@@ -30,7 +30,7 @@ Production Report
                             <label for="toDate">To Date:</label>
                             <input type="date" class="form-control" id="toDate" name="toDate">
                         </div>
-                        <div class="align-self-end ml-auto"> 
+                        <div class="align-self-end ml-auto">
                             <div class="form-group col">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
@@ -38,7 +38,7 @@ Production Report
                     </div>
                 </form>
             </div>
-            
+
         </div>
         {% if oee_score %}
         <div class="row mt-4">
@@ -84,14 +84,16 @@ Production Report
                                 <hr>
                                 <p class="card-text">Total Count <span class="float-right">{{ total_count }}</span>
                                 </p>
-                                <p class="card-text">Good Count <span class="float-right">{{ total_good_count }}</span></p>
+                                <p class="card-text">Good Count <span class="float-right">{{ total_good_count }}</span>
+                                </p>
                                 <p class="card-text">Reject Count <span class="float-right">{{ total_rejects }}</span>
                                 </p>
                             </div>
                             <div class="col-md-4 mt-md-0 mt-3">
                                 <h5>Time</h5>
                                 <hr>
-                                <p class="card-text">Total Downtime <span class="float-right">{{ total_downtime }}</span></p>
+                                <p class="card-text">Total Downtime <span
+                                        class="float-right">{{ total_downtime }}</span></p>
                             </div>
                         </div>
                     </div>
@@ -130,7 +132,7 @@ Production Report
         </div>
 
 
-        
+
 
 
     </div>
