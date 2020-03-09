@@ -4,7 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from app.utils import db_connect
 from app.oee.utils import get_planned_output, get_conformance_to_plan, add_update_oee_details, get_hourly_count
-from app.reports.utils import sql_to_arr, sql_to_arr2
+from app.reports.utils import get_product_count, get_downtime_minutes
 from app.models import OEEtbl, Orders, OEEcalc
 from datetime import datetime, date, timedelta
 from sqlalchemy import desc
@@ -165,11 +165,11 @@ def productionReport():
         line_speed_result = cur.fetchone()
         
         
-        day_count = len(sql_to_arr(from_date, to_date, line_num, 'Product'))
+        day_count = len(get_product_count(from_date, to_date, line_num, 'Product'))
         avg_line_speed = line_speed_result[0] / day_count
-        daily_count = sum([i[2] + i[3] for i in sql_to_arr(from_date, to_date, line_num, 'Product')])
-        daily_rejects = sum(sql_to_arr(from_date, to_date, line_num, 'Rejects'))
-        daily_downtime = sum([i[1] + i[2] for i in sql_to_arr2(from_date, to_date, line_num, 'start_date')])
+        daily_count = sum([i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')])
+        daily_rejects = sum(get_product_count(from_date, to_date, line_num, 'Rejects'))
+        daily_downtime = sum([i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'start_date')])
 
        
         # add data into object
@@ -191,14 +191,14 @@ def productionReport():
         # Downtime Chart (dt)
         dt_legend = 'Downtime Data (Minutes)'
 
-        dt_labels = [i[0] for i in sql_to_arr2(from_date, to_date, line_num, 'type')]
-        dt_values = [i[1] + i[2] for i in sql_to_arr2(from_date, to_date, line_num, 'type')]
+        dt_labels = [i[0] for i in get_downtime_minutes(from_date, to_date, line_num, 'type')]
+        dt_values = [i[1] + i[2] for i in get_downtime_minutes(from_date, to_date, line_num, 'type')]
 
         # Daily production count (dp)
         dp_legend = 'Daily Production Count'
 
-        dp_labels = [i[0] for i in sql_to_arr(from_date, to_date, line_num, 'Product')]
-        dp_values = [i[2] + i[3] for i in sql_to_arr(from_date, to_date, line_num, 'Product')]
+        dp_labels = [i[0] for i in get_product_count(from_date, to_date, line_num, 'Product')]
+        dp_values = [i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')]
         
 
         ######################################

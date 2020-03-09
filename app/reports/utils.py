@@ -2,8 +2,8 @@
 from app.utils import db_connect
 
 
-# Function to convert SQLite result into an array for Product & Reject data
-def sql_to_arr(from_date, to_date, line_num, unit_type):
+# Function to get product/reject numbers by date
+def get_product_count(from_date, to_date, line_num, unit_type):
     con = db_connect()
     cur = con.cursor()
 
@@ -18,8 +18,8 @@ def sql_to_arr(from_date, to_date, line_num, unit_type):
 
         return results
 
-# Function to convert SQLite result into an array for downtime data
-def sql_to_arr2(from_date, to_date, line_num, col_type):
+# Function to get downtime minutes
+def get_downtime_minutes(from_date, to_date, line_num, col_type):
     con = db_connect()
     cur = con.cursor()
     cur.execute("""SELECT type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
