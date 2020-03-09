@@ -32,8 +32,6 @@ def sql_to_arr2(from_date, to_date, line_num):
                     AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
     results = cur.fetchall()
     
-    arr = []
-    for row in results:        
-        arr.append(row[0] + row[1])
-    return arr
+    
+    return results
 
