@@ -204,7 +204,9 @@ def productionReport():
         ######################################
 
         
-        context = {
+        data = {
+            'from_date': from_date,
+            'to_date' : to_date,
             'avg_daily_good_count' : f'{round((daily_count-daily_rejects) / day_count):,}',
             'avg_daily_rejects' : daily_rejects / day_count,
             'avg_daily_downtime' : timedelta(minutes=round(daily_downtime / day_count)),
@@ -226,6 +228,6 @@ def productionReport():
         }
 
 
-        return render_template('productionreport.html', **context)
+        return render_template('productionreport.html', **data)
 
     return render_template('productionreport.html')

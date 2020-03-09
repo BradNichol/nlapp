@@ -8,7 +8,15 @@ Production Report
 
 <div class="card shadow mt-5">
 
-    <h3 class="card-header text-center">Production Report</h3>
+    <div class="card-header text-center">
+        <h3>Production Report</h3>
+        {% if from_date %}
+        <div class="col">
+            <span class="badge badge-pill badge-dark">From: {{  from_date }} </span>
+            <span class="badge badge-pill badge-dark">To: {{  to_date }}</span>
+        </div>
+        {% endif %}
+    </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
