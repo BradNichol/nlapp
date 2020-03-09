@@ -131,6 +131,9 @@ Production Report
 </div>
 
 <script>
+    /*
+      ------ Total downtime chart ---------
+    */
     let dtData = {
         labels: [
             {% for item in dt_labels %}
@@ -169,6 +172,9 @@ Production Report
 
     });
 
+    /*
+       -----  Daily production chart --------
+    */
     let dp_data = {
         labels: [
             {% for item in dp_labels %}
