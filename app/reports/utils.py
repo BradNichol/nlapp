@@ -19,15 +19,15 @@ def sql_to_arr(from_date, to_date, line_num, unit_type):
         return results
 
 # Function to convert SQLite result into an array for downtime data
-def sql_to_arr2(from_date, to_date, line_num):
+def sql_to_arr2(from_date, to_date, line_num, col_type):
     con = db_connect()
     cur = con.cursor()
-    cur.execute("""SELECT SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
+    cur.execute("""SELECT type, SUM(_07+_08+_09+_10+_11+_12+_13+_14) AS sum_downtime_am,
                     SUM(_15+_16+_17+_18+_19+_20+_21+_22) sum_downtime_pm 
                     FROM OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id 
                     WHERE type != 'Product' AND type !='Rejects' 
                     AND DATE(start_date) >= '{}' 
-                    AND DATE(start_date) <= '{}' AND line_num {} GROUP BY start_date """.format(from_date, to_date, line_num))
+                    AND DATE(start_date) <= '{}' AND line_num {} GROUP BY {} """.format(from_date, to_date, line_num, col_type))
     results = cur.fetchall()
     
     
