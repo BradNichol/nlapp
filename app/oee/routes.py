@@ -38,6 +38,7 @@ def addOee():
         line_num = request.form.get('lineNum')
         line_speed = request.form.get('cpm')
         actual_operators = request.form.get('actOperators')
+        product_type = request.form.get('product_type')
 
         # get date
         todays_date = date.today()
@@ -53,7 +54,7 @@ def addOee():
 
 
         # add new OEE sheet
-        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators, planned_output=planned_output)
+        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators, planned_output=planned_output, product_type=product_type)
         db.session.add(new_oee)
         db.session.commit()
 

@@ -164,6 +164,7 @@ class OEEtbl(db.Model, UserMixin):
     speed = db.Column(db.Integer, unique=False, nullable=False)
     actual_operators = db.Column(db.Integer, unique=False, nullable=False)
     planned_output = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    product_type = db.Column(db.String(40), unique=False, nullable=False)
 
 class Product(db.Model, UserMixin):
 
