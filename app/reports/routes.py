@@ -208,7 +208,13 @@ def productionReport():
         dp_values = [i[2] + i[3] for i in get_product_count(from_date, to_date, line_num, 'Product')]
         
         # Daily PAQ-OEE chart (oee)
-        oee_dict = oee_to_dict(daily_downtime_count, line_speed_arr, daily_unit_count, daily_reject_count)
+        try:
+            oee_dict = oee_to_dict(daily_downtime_count, line_speed_arr, daily_unit_count, daily_reject_count)
+        except:
+            flash("Today's data is not complete. Use yesterday as the max date.")
+            return redirect(url_for('reports.productionReport'))
+
+   
         
         oee_legend = 'PAQ-OEE Chart'
         oee_labels = dates
