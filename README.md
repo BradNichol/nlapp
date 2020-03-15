@@ -70,8 +70,8 @@ The app will provide a single reference point for all interconnected activities.
 
 
 # Bugs to fix
-1. Navigation dropdown menu off screen.
-2. Password validation on login
-3. Order info page error on refresh (session isn't working)
+1. ~~Navigation dropdown menu off screen.~~
+2. ~~Password validation on login~~
+3. ~~Order info page error on refresh (session isn't working)~~
         
 
