@@ -166,7 +166,7 @@ def reset_request():
             flash('There is no account with that email. Please register first.')
             return redirect(url_for('users.passwordreset'))
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.')
+        flash('An email has been sent with instructions to reset your password. You may need to check your SPAM/junk folder.')
         return redirect(url_for('users.login'))
 
     return render_template('reset_request.html')
