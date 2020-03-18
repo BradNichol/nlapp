@@ -5,7 +5,7 @@ from flask import url_for
 
 # sqlite db connection
 def db_connect(arg=None):
-    con = sqlite3.connect('app/database.db')
+    con = sqlite3.connect('app/nldata.db')
     if not arg:
         con.row_factory = sqlite3.Row
         return con
