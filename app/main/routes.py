@@ -51,7 +51,7 @@ def index():
         weeklyUnitsRequired = cur.fetchone()
         weeklyUnitsRequired = f'{weeklyUnitsRequired["weeklyUnitsRequired"]:,}'
     except:
-        weeklyUnitsRequired = 0
+        weeklyUnitsRequired = 'N/A'
 
     
     
