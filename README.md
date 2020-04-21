@@ -1,10 +1,6 @@
 # Live project link
 http://bradington.pythonanywhere.com/
 
-Register or use login credentials:
-U/N: test@test.com
-Pass: test1
-
 
 # Project Overview
 
