@@ -4,7 +4,7 @@ http://bradington.pythonanywhere.com/
 
 # Project Overview
 
-A web app designed to solve the disjointed processes at my employer, Nutree Life Ltd,
+A web app designed to solve the disjointed processes at my employer,
 a manufacturer of protein bars.
 
 
