@@ -83,9 +83,16 @@ def index():
     values = []
     for i in totalWeeklyUnits:
         values.append(i[1])
-    
 
-    return render_template('index.html', result1=result1, weeklyUnitsRequired=weeklyUnitsRequired, totalUnitsProduced=f'{totalUnitsProduced:,}', result3=result3, legend=legend, labels=labels, values=values)
+    data = {
+        'weeklyUnitsRequired': weeklyUnitsRequired,
+        'totalUnitsProduced': f'{totalUnitsProduced:,}',
+        'legend': legend,
+        'labels': labels,
+        'values': values
+    }    
+
+    return render_template('index.html', **data)
 
     
 
