@@ -65,6 +65,12 @@ def index():
                                 AND DATE(start_date) >= '{}' AND DATE(start_date) <= '{}' GROUP BY start_date  """.format(firstDateOfWeek, todaysDate))
     totalWeeklyUnits = cur.fetchall()
 
+    # count total units produced
+    totalUnitsProduced = 0
+    for i in totalWeeklyUnits:
+        totalUnitsProduced += i[1]
+     
+
     # Chart Data 
     
     legend = 'Total Units Produced By Day'
