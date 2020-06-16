@@ -48,9 +48,9 @@ def addOee():
         planned_output = get_planned_output(line_num)
         
         # stop new sheet creation if one already exists for that line
-        sheet_check = OEEtbl.query.filter_by(start_date=todays_date, line_num=line_num).first()
+        sheet_check = OEEtbl.query.filter_by(start_date=todays_date, shift=shift, line_num=line_num).first()
         if sheet_check:
-            flash('An OEE sheet has already been created today for that line number.')
+            flash('An OEE sheet has already been created today for that shift and line number.')
             return redirect(url_for('oee.viewOee'))
 
 
