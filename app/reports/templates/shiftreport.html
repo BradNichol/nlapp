@@ -17,7 +17,7 @@ OEE Report
                         <div class="form-group col-9">
                             <select class="form-control" id="shiftSelect" name="shiftSelect">
                                 {% for row in oee_list %}
-                                <option value="{{row.id}}">Date: {{ row.start_date.strftime("%m/%d/%Y") }} Line:
+                                <option value="{{row.id}}">Date: {{ row.start_date.strftime("%m/%d/%Y") }} | Shift: {{ row.shift }} | Line:
                                     {{ row.line_num }}</option>
                                 {% endfor %}
                             </select>
