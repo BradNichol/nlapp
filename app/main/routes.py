@@ -79,7 +79,7 @@ def index():
         values.append(i[1])
     
 
-    return render_template('index.html', result1=result1, weeklyUnitsRequired=weeklyUnitsRequired, result3=result3, legend=legend, labels=labels, values=values)
+    return render_template('index.html', result1=result1, weeklyUnitsRequired=weeklyUnitsRequired, totalUnitsProduced=totalUnitsProduced, result3=result3, legend=legend, labels=labels, values=values)
 
     
 
