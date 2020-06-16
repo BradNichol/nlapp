@@ -101,7 +101,9 @@
 
 
         $(document).ready(function() {
-            $('#schedule_table').DataTable();
+            $('#schedule_table').DataTable({
+                "ordering": false
+            });
         });
 
         // Advice modal
