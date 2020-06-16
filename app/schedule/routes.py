@@ -85,6 +85,7 @@ def addscheduledetails():
         format_date = request.form.get('format_date')
         product_id = request.form.get('product_id')
         line_num = request.form.get('line_num')
+        shift = request.form.get('shift')
 
         product_check = ScheduleDetails.query.filter_by(schedule_id=schedule_id, product_id=product_id, line_num=line_num).all()
 
@@ -97,7 +98,7 @@ def addscheduledetails():
 
 
         else:
-            addProd = ScheduleDetails(schedule_id=schedule_id, product_id=product_id, line_num=line_num)
+            addProd = ScheduleDetails(schedule_id=schedule_id, product_id=product_id, shift=shift, line_num=line_num)
             db.session.add(addProd)
             db.session.commit()
 
