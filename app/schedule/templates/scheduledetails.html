@@ -32,6 +32,7 @@
                         <thead>
                             <tr>
                                 <th width="20%">Product (SKU)</th>
+                                <th width="10%">Shift</th>
                                 <th width="10%">Line Number</th>
                                 <th>Monday</th>
                                 <th>Tuesday</th>
@@ -48,6 +49,7 @@
                             <tr>
 
                                 <td>{{ row.products.product_sku }}</td>
+                                <td>{{ row.shift }}</td>
                                 <td>{{ row.line_num }}</td>
                                 <td><input type="number" class="form-control fTableFormElements" id="monday" name="monday" min="0" value="{{row.monday}}"></td>
                                 <td><input type="number" class="form-control fTableFormElements" id="tuesday" name="tuesday" min="0" value="{{row.tuesday}}""></td>
