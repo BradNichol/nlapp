@@ -15,18 +15,6 @@ def viewschedule():
 
     schedule = Schedule.query.order_by(desc(Schedule.wc_date)).limit(60).all()
     
-    """
-    weeklyUnitsRequired = ScheduleDetails.query.with_entities(func.sum(
-                            ScheduleDetails.monday+
-                            ScheduleDetails.tuesday+
-                            ScheduleDetails.wednesday+
-                            ScheduleDetails.thursday+
-                            ScheduleDetails.friday+
-                            ScheduleDetails.saturday+
-                            ScheduleDetails.sunday).label('mySum')).group_by(ScheduleDetails.schedule_id).subquery()
-    
-    """
-    
     return render_template('schedule.html', schedule=schedule)
 
 @schedule.route("/schedule/add", methods=["POST"])
