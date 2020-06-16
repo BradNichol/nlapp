@@ -44,7 +44,7 @@ def index():
         cur.execute("""SELECT SUM(monday + tuesday + wednesday + thursday + friday + saturday + sunday) as weeklyUnitsRequired 
                     from schedule_details WHERE schedule_id = :schedule_id""", {'schedule_id':schedule_id.id})
         weeklyUnitsRequired = cur.fetchone()
-        weeklyUnitsRequired = f'{weeklyUnitsRequired["weeklyUnitsRequired"]:,}'
+        weeklyUnitsRequired = weeklyUnitsRequired["weeklyUnitsRequired"]
     except:
         weeklyUnitsRequired = 'N/A'
 
@@ -77,7 +77,7 @@ def index():
         values.append(i[1])
 
     data = {
-        'weeklyUnitsRequired': weeklyUnitsRequired,
+        'weeklyUnitsRequired': f'{weeklyUnitsRequired:,}',
         'totalUnitsProduced': f'{totalUnitsProduced:,}',
         'legend': legend,
         'labels': labels,
