@@ -15,11 +15,6 @@ def index():
 
     con = db_connect()
     cur = con.cursor()
-    
-    cur.execute("SELECT COUNT(cname) FROM customers")
-    result1 = cur.fetchone()[0]
-    cur.execute("SELECT COUNT(id) FROM recipes GROUP BY rname")
-    result3 = cur.fetchone()[0]
 
     # Daily units produced chart
     todayIndex = date.weekday(date.today())
@@ -55,9 +50,6 @@ def index():
 
     
     
-    
-
-
     
     # unit count 
     cur.execute("""SELECT start_date, SUM(_07+_08+_09+_10+_11+_12+_13+_14+_15+_16+_17+_18+_19+_20+_21+_22) AS totalUnits FROM 
