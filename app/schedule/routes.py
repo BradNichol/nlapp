@@ -106,6 +106,7 @@ def editscheduledetails():
         format_date = request.form.get('format_date')
         product_id = request.form.getlist('product_id')
         line_num = request.form.getlist('line_num')
+        shift = request.form.getlist('shift')
         #batch_number = request.form.getlist('batch_number')
         monday = request.form.getlist('monday')
         tuesday = request.form.getlist('tuesday')
@@ -123,8 +124,8 @@ def editscheduledetails():
         
         if idcheck:
             for ind, product_id in enumerate(product_id):
-                sql = "UPDATE schedule_details SET monday=?, tuesday=?, wednesday=?, thursday=?, friday=?, saturday=?, sunday=? WHERE product_id=? AND schedule_id=? AND line_num=? "
-                cur.execute(sql, (monday[ind], tuesday[ind], wednesday[ind], thursday[ind], friday[ind], saturday[ind], sunday[ind], product_id, schedule_id, line_num[ind]))
+                sql = "UPDATE schedule_details SET monday=?, tuesday=?, wednesday=?, thursday=?, friday=?, saturday=?, sunday=? WHERE product_id=? AND schedule_id=? AND line_num=? AND shift=? "
+                cur.execute(sql, (monday[ind], tuesday[ind], wednesday[ind], thursday[ind], friday[ind], saturday[ind], sunday[ind], product_id, schedule_id, line_num[ind], shift[ind]))
                 con.commit()
             flash('Update successful.')
             return redirect(url_for('schedule.scheduledetails', format_date=format_date))
