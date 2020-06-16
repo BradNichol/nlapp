@@ -200,6 +200,7 @@ class ScheduleDetails (db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     schedule_id = db.Column(db.Integer, db.ForeignKey('schedule.id'), unique=False, nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), unique=False, nullable=False)
+    shift = db.Column(db.String(30), unique=False, nullable=False)
     line_num = db.Column(db.Integer, unique=False, nullable=False)
     monday = db.Column(db.Integer, unique=False, nullable=False, default=0)
     tuesday = db.Column(db.Integer, unique=False, nullable=False, default=0)
