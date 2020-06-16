@@ -76,7 +76,7 @@ def addscheduledetails():
         line_num = request.form.get('line_num')
         shift = request.form.get('shift')
 
-        product_check = ScheduleDetails.query.filter_by(schedule_id=schedule_id, product_id=product_id, line_num=line_num).all()
+        product_check = ScheduleDetails.query.filter_by(schedule_id=schedule_id, product_id=product_id, shift=shift, line_num=line_num).all()
 
        
         if product_check:
