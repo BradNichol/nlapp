@@ -29,6 +29,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Operator</th>
+                                <th>Shift</th>
                                 <th>Line Number</th>
                             </tr>
                         </thead>
@@ -37,6 +38,7 @@
                             <tr class="view_oee" id="{{ row.id}}">
                                 <td>{{ row.start_date.strftime("%d/%m/%Y") }}</td>
                                 <td>{{ row.operator.first_name }} {{ row.operator.surname }}</td>
+                                <td></td>
                                 <td>{{ row.line_num }}</td>
                             </tr>
                             {% endfor %}
