@@ -15,11 +15,6 @@ def index():
 
     con = db_connect()
     cur = con.cursor()
-    
-    cur.execute("SELECT COUNT(cname) FROM customers")
-    result1 = cur.fetchone()[0]
-    cur.execute("SELECT COUNT(id) FROM recipes GROUP BY rname")
-    result3 = cur.fetchone()[0]
 
     # Daily units produced chart
     todayIndex = date.weekday(date.today())
@@ -49,21 +44,24 @@ def index():
         cur.execute("""SELECT SUM(monday + tuesday + wednesday + thursday + friday + saturday + sunday) as weeklyUnitsRequired 
                     from schedule_details WHERE schedule_id = :schedule_id""", {'schedule_id':schedule_id.id})
         weeklyUnitsRequired = cur.fetchone()
-        weeklyUnitsRequired = f'{weeklyUnitsRequired["weeklyUnitsRequired"]:,}'
+        weeklyUnitsRequired = weeklyUnitsRequired["weeklyUnitsRequired"]
     except:
         weeklyUnitsRequired = 'N/A'
 
     
     
     
-
-
-    
     # unit count 
     cur.execute("""SELECT start_date, SUM(_07+_08+_09+_10+_11+_12+_13+_14+_15+_16+_17+_18+_19+_20+_21+_22) AS totalUnits FROM 
                                 OEE_details JOIN OEE ON OEE_details.oee_id = OEE.id WHERE type = 'Product' 
                                 AND DATE(start_date) >= '{}' AND DATE(start_date) <= '{}' GROUP BY start_date  """.format(firstDateOfWeek, todaysDate))
     totalWeeklyUnits = cur.fetchall()
+
+    # count total units produced
+    totalUnitsProduced = 0
+    for i in totalWeeklyUnits:
+        totalUnitsProduced += i[1]
+     
 
     # Chart Data 
     
@@ -77,9 +75,16 @@ def index():
     values = []
     for i in totalWeeklyUnits:
         values.append(i[1])
-    
 
-    return render_template('index.html', result1=result1, weeklyUnitsRequired=weeklyUnitsRequired, result3=result3, legend=legend, labels=labels, values=values)
+    data = {
+        'weeklyUnitsRequired': f'{weeklyUnitsRequired:,}',
+        'totalUnitsProduced': f'{totalUnitsProduced:,}',
+        'legend': legend,
+        'labels': labels,
+        'values': values
+    }    
+
+    return render_template('index.html', **data)
 
     
 

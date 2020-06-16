@@ -23,7 +23,7 @@
             <div class="row justify-content-center">
                 <div class="col-6">
                     <div class="table-responsive mt-5">
-                    <table class="display table table-hover" style="width:100%">
+                    <table id="schedule_table" class="display table table-hover" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Week Commencing</th>
@@ -101,7 +101,9 @@
 
 
         $(document).ready(function() {
-            $('#orders_table').DataTable();
+            $('#schedule_table').DataTable({
+                "ordering": false
+            });
         });
 
         // Advice modal

@@ -15,7 +15,6 @@
     <div class="card-deck mt-1">
         <div class="card shadow">
             <div class="card-header">
-                <h5 class="card-title">OEE for: NL/{{  oeeInfo.order_id }}</h5>
                 <span class="badge badge-pill badge-primary">Line {{  oeeInfo.line_num }}</span>
                 <span class="badge badge-pill badge-secondary">{{  oeeInfo.operator.first_name }} {{  oeeInfo.operator.surname }}</span>
                 <span class="badge badge-pill badge-secondary">{{  oeeInfo.orders.rname }}</span>
@@ -29,6 +28,8 @@
                         <div class="form-group col-sm">
                             <label for="time">Time:</label>
                             <select class="form-control" id="time" name="time">
+                                <option selected="true" disabled></option>
+                                <option disabled>-- AM -- </option>
                                 <option value="_07">07:00</option>
                                 <option value="_08">08:00</option>
                                 <option value="_09">09:00</option>
@@ -37,6 +38,7 @@
                                 <option value="_12">12:00</option>
                                 <option value="_13">13:00</option>
                                 <option value="_14">14:00</option>
+                                <option disabled>-- PM -- </option>
                                 <option value="_15">15:00</option>
                                 <option value="_16">16:00</option>
                                 <option value="_17">17:00</option>

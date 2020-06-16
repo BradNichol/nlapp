@@ -4,7 +4,7 @@ from flask_login import login_required
 from app.models import Schedule, ScheduleDetails, Product
 from app.utils import db_connect
 from datetime import datetime, date, timedelta
-from sqlalchemy import func, asc
+from sqlalchemy import func, asc, desc
 
 schedule = Blueprint('schedule', __name__, template_folder='templates')
 
@@ -13,7 +13,8 @@ schedule = Blueprint('schedule', __name__, template_folder='templates')
 @login_required
 def viewschedule():
 
-    schedule = Schedule.query.all()
+    schedule = Schedule.query.order_by(desc(Schedule.wc_date)).limit(60).all()
+    
     """
     weeklyUnitsRequired = ScheduleDetails.query.with_entities(func.sum(
                             ScheduleDetails.monday+
@@ -85,6 +86,7 @@ def addscheduledetails():
         format_date = request.form.get('format_date')
         product_id = request.form.get('product_id')
         line_num = request.form.get('line_num')
+        shift = request.form.get('shift')
 
         product_check = ScheduleDetails.query.filter_by(schedule_id=schedule_id, product_id=product_id, line_num=line_num).all()
 
@@ -97,7 +99,7 @@ def addscheduledetails():
 
 
         else:
-            addProd = ScheduleDetails(schedule_id=schedule_id, product_id=product_id, line_num=line_num)
+            addProd = ScheduleDetails(schedule_id=schedule_id, product_id=product_id, shift=shift, line_num=line_num)
             db.session.add(addProd)
             db.session.commit()
 

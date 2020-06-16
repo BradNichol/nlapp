@@ -35,6 +35,7 @@ def addOee():
         # store OEE setup data from form 
         order_id = request.form.get('wOrder_id')
         operator_id = current_user.id
+        shift = request.form.get('shift')
         line_num = request.form.get('lineNum')
         line_speed = request.form.get('cpm')
         actual_operators = request.form.get('actOperators')
@@ -47,14 +48,14 @@ def addOee():
         planned_output = get_planned_output(line_num)
         
         # stop new sheet creation if one already exists for that line
-        sheet_check = OEEtbl.query.filter_by(start_date=todays_date, line_num=line_num).first()
+        sheet_check = OEEtbl.query.filter_by(start_date=todays_date, shift=shift, line_num=line_num).first()
         if sheet_check:
-            flash('An OEE sheet has already been created today for that line number.')
+            flash('An OEE sheet has already been created today for that shift and line number.')
             return redirect(url_for('oee.viewOee'))
 
 
         # add new OEE sheet
-        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators, planned_output=planned_output, product_type=product_type)
+        new_oee = OEEtbl(order_id=order_id, operator_id=operator_id, shift=shift, line_num=line_num, start_date=todays_date, speed=line_speed, actual_operators=actual_operators, planned_output=planned_output, product_type=product_type)
         db.session.add(new_oee)
         db.session.commit()
 
