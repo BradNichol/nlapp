@@ -159,6 +159,7 @@ class OEEtbl(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), unique=False, nullable=False)
     operator_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=False, nullable=False)
+    shift = db.Column(db.String(40), unique=False, nullable=False)
     line_num = db.Column(db.Integer, unique=False, nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     speed = db.Column(db.Integer, unique=False, nullable=False)
